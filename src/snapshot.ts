@@ -39,9 +39,14 @@ async function snapshotToken(token: TokenConfig): Promise<void> {
 
   // Also save raw CSV to data/ for inspection
   const csvPath = `${config.dataDir}/${token.name}_holders.csv`;
-  const csvLines = ["wallet,amount"];
+  const totalSupply = BigInt(token.totalSupplyRaw || "0");
+  const csvLines = ["wallet,amount,pct_of_supply"];
   for (const [wallet, amount] of holders) {
-    csvLines.push(`${wallet},${amount}`);
+    const pct =
+      totalSupply > 0n
+        ? ((Number(amount) / Number(totalSupply)) * 100).toFixed(8)
+        : "0";
+    csvLines.push(`${wallet},${amount},${pct}`);
   }
   fs.writeFileSync(csvPath, csvLines.join("\n") + "\n");
   console.log(`  Exported to ${csvPath}`);
@@ -65,7 +70,7 @@ async function main(): Promise<void> {
       nameIndex !== -1 && args[nameIndex + 1]
         ? args[nameIndex + 1]
         : "CUSTOM";
-    tokensToSnapshot = [{ name, mint, minBalance: "0" }];
+    tokensToSnapshot = [{ name, mint, minBalance: "0", decimals: 0, totalSupplyRaw: "0" }];
   } else {
     // Snapshot all configured tokens
     tokensToSnapshot = tokens.filter(

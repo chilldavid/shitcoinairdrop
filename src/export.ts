@@ -15,6 +15,7 @@ import fs from "fs";
 import {
   getEligibleWallets,
   getSnapshotSummary,
+  parseHoldings,
   closeDb,
   MergedHolder,
 } from "./db";
@@ -85,22 +86,40 @@ function main(): void {
     };
   });
 
-  // Export CSV
+  // Build a map from wallet -> parsed holdings for CSV/JSON enrichment
+  const holdingsMap = new Map(
+    eligible.map((h) => [h.wallet, parseHoldings(h.tokens)])
+  );
+
+  // Export CSV with per-token % of supply
   const csvPath = `${config.outputDir}/eligible_wallets.csv`;
-  const csvLines = ["wallet,amount,token_count"];
+  const csvLines = ["wallet,airdrop_amount,token_count,holdings"];
   for (const e of entries) {
-    csvLines.push(`${e.wallet},${e.amount},${e.tokenCount}`);
+    const holdings = holdingsMap.get(e.wallet) || [];
+    const holdingsStr = holdings
+      .map((t) => `${t.name}:${t.pctOfSupply.toFixed(6)}%`)
+      .join("|");
+    csvLines.push(`${e.wallet},${e.amount},${e.tokenCount},${holdingsStr}`);
   }
   fs.writeFileSync(csvPath, csvLines.join("\n") + "\n");
   console.log(`Exported ${entries.length} wallets to ${csvPath}`);
 
-  // Export JSON (compatible with Merkle tree generators)
+  // Export JSON (compatible with Merkle tree generators) with holdings detail
   const jsonPath = `${config.outputDir}/eligible_wallets.json`;
-  const jsonData = entries.map((e, index) => ({
-    index,
-    wallet: e.wallet,
-    amount: e.amount,
-  }));
+  const jsonData = entries.map((e, index) => {
+    const holdings = holdingsMap.get(e.wallet) || [];
+    return {
+      index,
+      wallet: e.wallet,
+      amount: e.amount,
+      tokenCount: e.tokenCount,
+      holdings: holdings.map((t) => ({
+        token: t.name,
+        rawAmount: t.amount,
+        pctOfSupply: Number(t.pctOfSupply.toFixed(8)),
+      })),
+    };
+  });
   fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2) + "\n");
   console.log(`Exported ${entries.length} wallets to ${jsonPath}`);
 

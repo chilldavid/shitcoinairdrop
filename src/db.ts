@@ -3,6 +3,7 @@ import path from "path";
 import { config } from "./config";
 
 import { EXCLUDED_ADDRESS_SET } from "./exclusions";
+import { getTokenByName } from "./config";
 
 const DB_PATH = path.join(config.dataDir, "holders.db");
 
@@ -74,6 +75,28 @@ export interface MergedHolder {
   wallet: string;
   tokenCount: number;
   tokens: string; // comma-separated "name:amount" pairs
+}
+
+export interface TokenHolding {
+  name: string;
+  amount: string;
+  pctOfSupply: number;
+}
+
+/** Parse the "tokens" field from a MergedHolder into structured holdings with % of supply */
+export function parseHoldings(tokensStr: string): TokenHolding[] {
+  return tokensStr.split(",").map((pair) => {
+    const colonIdx = pair.indexOf(":");
+    const name = pair.substring(0, colonIdx);
+    const amount = pair.substring(colonIdx + 1);
+    const tokenCfg = getTokenByName(name);
+    let pctOfSupply = 0;
+    if (tokenCfg && tokenCfg.totalSupplyRaw !== "0") {
+      pctOfSupply =
+        (Number(amount) / Number(tokenCfg.totalSupplyRaw)) * 100;
+    }
+    return { name, amount, pctOfSupply };
+  });
 }
 
 /**

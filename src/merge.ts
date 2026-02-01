@@ -10,6 +10,7 @@ import {
   getEligibleWallets,
   getSnapshotSummary,
   countExcluded,
+  parseHoldings,
   closeDb,
 } from "./db";
 import { getExclusionLabel } from "./exclusions";
@@ -75,14 +76,15 @@ function main(): void {
     );
   }
 
-  // Show top holders
+  // Show top holders with % of supply
   console.log("\n=== Top 20 Wallets (by tokens held) ===");
   for (const h of eligible.slice(0, 20)) {
-    const tokenNames = h.tokens
-      .split(",")
-      .map((t) => t.split(":")[0])
+    const holdings = parseHoldings(h.tokens);
+    const details = holdings
+      .map((t) => `${t.name}: ${t.pctOfSupply.toFixed(4)}%`)
       .join(", ");
-    console.log(`  ${h.wallet} — ${h.tokenCount} tokens (${tokenNames})`);
+    console.log(`  ${h.wallet} — ${h.tokenCount} tokens`);
+    console.log(`    ${details}`);
   }
 
   closeDb();
