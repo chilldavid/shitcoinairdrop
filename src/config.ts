@@ -33,20 +33,14 @@ export const config = {
  * Replace these placeholder entries with your actual token mint addresses.
  */
 export const tokens: TokenConfig[] = [
-  // --- REPLACE THESE WITH YOUR ACTUAL TOKENS ---
-  // Example:
-  // { name: "BONK",   mint: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", minBalance: "0" },
-  // { name: "WIF",    mint: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm", minBalance: "0" },
-  //
-  // Add your 10 token mint addresses below:
-  { name: "TOKEN_1", mint: "REPLACE_WITH_MINT_ADDRESS_1", minBalance: "0" },
-  { name: "TOKEN_2", mint: "REPLACE_WITH_MINT_ADDRESS_2", minBalance: "0" },
-  { name: "TOKEN_3", mint: "REPLACE_WITH_MINT_ADDRESS_3", minBalance: "0" },
-  { name: "TOKEN_4", mint: "REPLACE_WITH_MINT_ADDRESS_4", minBalance: "0" },
-  { name: "TOKEN_5", mint: "REPLACE_WITH_MINT_ADDRESS_5", minBalance: "0" },
-  { name: "TOKEN_6", mint: "REPLACE_WITH_MINT_ADDRESS_6", minBalance: "0" },
-  { name: "TOKEN_7", mint: "REPLACE_WITH_MINT_ADDRESS_7", minBalance: "0" },
-  { name: "TOKEN_8", mint: "REPLACE_WITH_MINT_ADDRESS_8", minBalance: "0" },
-  { name: "TOKEN_9", mint: "REPLACE_WITH_MINT_ADDRESS_9", minBalance: "0" },
-  { name: "TOKEN_10", mint: "REPLACE_WITH_MINT_ADDRESS_10", minBalance: "0" },
+  { name: "MOODENG",  mint: "ED5nyyWEzpPPiWimP8vYm7sD7TD3LAt3Q3gRTWHzPJBY", minBalance: "0" },
+  { name: "PNUT",     mint: "2qEHjDLDLbuBgRYvsxhc5D6uDWAivNFZGan56P1tpump", minBalance: "0" },
+  { name: "CHILLGUY", mint: "Df6yfrKC8kZE3KNkrHERKzAetSxbrWeniQfyJY4Jpump",  minBalance: "0" },
+  { name: "WIF",      mint: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm", minBalance: "0" },
+  { name: "POPCAT",   mint: "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr", minBalance: "0" },
+  { name: "PENGU",    mint: "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv", minBalance: "0" },
+  { name: "FARTCOIN", mint: "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump", minBalance: "0" },
+  { name: "GIGA",     mint: "63LfDmNb3MQ8mw9MtZ2To9bEA2M71kZUUGq5tiJxcqj9", minBalance: "0" },
+  { name: "SPX",      mint: "J3NKxxXZcnNiMjKw9hYb2K4LUxgwB6t1FtPtQVsv3KFr", minBalance: "0" },
+  { name: "BONK",     mint: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", minBalance: "0" },
 ];

@@ -47,6 +47,49 @@ interface HeliusGetTokenAccountsResponse {
   };
 }
 
+const MAX_RETRIES = 4;
+const RETRY_DELAYS = [2000, 4000, 8000, 16000];
+
+async function fetchWithRetry(
+  mintAddress: string,
+  totalFetched: number,
+  params: Record<string, unknown>
+): Promise<HeliusGetTokenAccountsResponse> {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(config.heliusRpcUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: `snapshot-${mintAddress}-${totalFetched}`,
+          method: "getTokenAccounts",
+          params,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          `Helius API error: ${res.status} ${res.statusText} - ${await res.text()}`
+        );
+      }
+
+      return (await res.json()) as HeliusGetTokenAccountsResponse;
+    } catch (err) {
+      if (attempt < MAX_RETRIES) {
+        const delay = RETRY_DELAYS[attempt]!;
+        console.warn(
+          `\n  Retry ${attempt + 1}/${MAX_RETRIES} after ${delay}ms: ${err instanceof Error ? err.message : err}`
+        );
+        await sleep(delay);
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw new Error("Unreachable");
+}
+
 /**
  * Fetch all token accounts for a given mint using Helius's getTokenAccounts DAS API.
  * Handles cursor-based pagination automatically.
@@ -78,24 +121,7 @@ export async function* fetchTokenAccountsHelius(
       params.cursor = cursor;
     }
 
-    const res = await fetch(config.heliusRpcUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: `snapshot-${mintAddress}-${totalFetched}`,
-        method: "getTokenAccounts",
-        params,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error(
-        `Helius API error: ${res.status} ${res.statusText} - ${await res.text()}`
-      );
-    }
-
-    const data = (await res.json()) as HeliusGetTokenAccountsResponse;
+    const data = await fetchWithRetry(mintAddress, totalFetched, params);
 
     if (!data.result || data.result.token_accounts.length === 0) {
       break;
