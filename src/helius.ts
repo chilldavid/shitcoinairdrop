@@ -151,6 +151,7 @@ export async function getTokenHolders(
 
   for await (const batch of fetchTokenAccountsHelius(mintAddress)) {
     for (const acct of batch) {
+      if (acct.amount == null || !acct.owner) continue;
       const amount = BigInt(acct.amount);
       if (amount <= 0n) continue;
 
