@@ -2,6 +2,8 @@ import Database from "better-sqlite3";
 import path from "path";
 import { config } from "./config";
 
+import { EXCLUDED_ADDRESS_SET } from "./exclusions";
+
 const DB_PATH = path.join(config.dataDir, "holders.db");
 
 let _db: Database.Database | null = null;
@@ -76,10 +78,14 @@ export interface MergedHolder {
 
 /**
  * Query all wallets that hold at least `minTokens` of the snapshotted tokens.
+ * Excludes known exchange, DEX, DeFi, and market maker addresses.
  */
-export function getEligibleWallets(minTokens: number = 1): MergedHolder[] {
+export function getEligibleWallets(
+  minTokens: number = 1,
+  excludeKnown: boolean = true
+): MergedHolder[] {
   const db = getDb();
-  return db
+  const rows = db
     .prepare(
       `
     SELECT
@@ -94,6 +100,31 @@ export function getEligibleWallets(minTokens: number = 1): MergedHolder[] {
     `
     )
     .all(minTokens) as MergedHolder[];
+
+  if (!excludeKnown) return rows;
+
+  return rows.filter((r) => !EXCLUDED_ADDRESS_SET.has(r.wallet));
+}
+
+/**
+ * Count how many wallets were excluded from the eligible list.
+ */
+export function countExcluded(): { address: string; tokenCount: number }[] {
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `
+    SELECT wallet, COUNT(DISTINCT mint) as tokenCount
+    FROM token_holders
+    WHERE CAST(amount AS INTEGER) > 0
+    GROUP BY wallet
+    `
+    )
+    .all() as { wallet: string; tokenCount: number }[];
+
+  return rows
+    .filter((r) => EXCLUDED_ADDRESS_SET.has(r.wallet))
+    .map((r) => ({ address: r.wallet, tokenCount: r.tokenCount }));
 }
 
 /**

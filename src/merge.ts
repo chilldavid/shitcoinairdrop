@@ -2,14 +2,17 @@
  * Merge snapshotted token holders across all tokens and display eligibility stats.
  *
  * Usage:
- *   npm run merge                    # show stats for all holders
- *   npm run merge -- --min-tokens 3  # require holding at least 3 tokens
+ *   npm run merge                        # show stats for all holders
+ *   npm run merge -- --min-tokens 3      # require holding at least 3 tokens
+ *   npm run merge -- --no-exclude        # include exchange/program wallets
  */
 import {
   getEligibleWallets,
   getSnapshotSummary,
+  countExcluded,
   closeDb,
 } from "./db";
+import { getExclusionLabel } from "./exclusions";
 
 function main(): void {
   const args = process.argv.slice(2);
@@ -18,6 +21,8 @@ function main(): void {
     minTokensIdx !== -1 && args[minTokensIdx + 1]
       ? parseInt(args[minTokensIdx + 1], 10)
       : 1;
+
+  const excludeKnown = !args.includes("--no-exclude");
 
   // Show what's been snapshotted
   const summary = getSnapshotSummary();
@@ -34,9 +39,23 @@ function main(): void {
   }
   console.log(`  Total token accounts: ${totalHolders.toLocaleString()}`);
 
+  // Show excluded addresses
+  if (excludeKnown) {
+    const excluded = countExcluded();
+    if (excluded.length > 0) {
+      console.log(`\n=== Excluded Addresses (${excluded.length} found in data) ===`);
+      for (const ex of excluded) {
+        const label = getExclusionLabel(ex.address) || "Unknown";
+        console.log(`  ${ex.address} — ${label} (held ${ex.tokenCount} token(s))`);
+      }
+    }
+  }
+
   // Merge and filter
-  console.log(`\n=== Eligibility (min ${minTokens} token(s)) ===`);
-  const eligible = getEligibleWallets(minTokens);
+  console.log(
+    `\n=== Eligibility (min ${minTokens} token(s)${excludeKnown ? ", exchanges excluded" : ""}) ===`
+  );
+  const eligible = getEligibleWallets(minTokens, excludeKnown);
 
   console.log(`  Eligible wallets: ${eligible.length.toLocaleString()}`);
 
