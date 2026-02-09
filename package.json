@@ -9,7 +9,8 @@
     "merge": "ts-node src/merge.ts",
     "export": "ts-node src/export.ts",
     "supply": "ts-node src/supply.ts",
-    "distribution": "ts-node src/distribution.ts"
+    "distribution": "ts-node src/distribution.ts",
+    "merkle": "ts-node src/merkle.ts"
   },
   "repository": {
     "type": "git",
@@ -19,12 +20,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@noble/hashes": "^2.0.1",
     "@solana/spl-token": "^0.4.14",
+    "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/web3.js": "^1.98.4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.1.0",
     "better-sqlite3": "^12.6.2",
     "dotenv": "^17.2.3",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }

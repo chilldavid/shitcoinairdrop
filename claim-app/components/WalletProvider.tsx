@@ -1,0 +1,42 @@
+"use client";
+
+import { FC, ReactNode, useMemo } from "react";
+import {
+  ConnectionProvider,
+  WalletProvider as SolanaWalletProvider,
+} from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  CoinbaseWalletAdapter,
+  LedgerWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
+import { RPC_ENDPOINT } from "@/lib/constants";
+
+// Import wallet adapter styles
+import "@solana/wallet-adapter-react-ui/styles.css";
+
+interface Props {
+  children: ReactNode;
+}
+
+export const WalletProvider: FC<Props> = ({ children }) => {
+  const wallets = useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new CoinbaseWalletAdapter(),
+      new LedgerWalletAdapter(),
+    ],
+    []
+  );
+
+  return (
+    <ConnectionProvider endpoint={RPC_ENDPOINT}>
+      <SolanaWalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>{children}</WalletModalProvider>
+      </SolanaWalletProvider>
+    </ConnectionProvider>
+  );
+};
