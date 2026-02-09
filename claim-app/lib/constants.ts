@@ -21,3 +21,22 @@ export const RPC_ENDPOINT =
 // Token decimals for display
 export const TOKEN_DECIMALS = 6;
 export const TOKEN_SYMBOL = "AIRDROP"; // REPLACE with your token symbol
+
+// Clawback configuration
+// Set this to your admin wallet that will receive unclaimed tokens
+export const CLAWBACK_RECEIVER = new PublicKey(
+  "11111111111111111111111111111111" // REPLACE with your admin wallet
+);
+
+// Claim deadline - users must claim before this date
+// After this timestamp, admin can call clawback to recover unclaimed tokens
+export const CLAWBACK_START_TS = Math.floor(
+  new Date("2025-05-01T00:00:00Z").getTime() / 1000 // REPLACE with your deadline
+);
+
+// Human-readable deadline for display
+export const CLAIM_DEADLINE = new Date(CLAWBACK_START_TS * 1000).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});

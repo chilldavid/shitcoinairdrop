@@ -10,7 +10,8 @@
     "export": "ts-node src/export.ts",
     "supply": "ts-node src/supply.ts",
     "distribution": "ts-node src/distribution.ts",
-    "merkle": "ts-node src/merkle.ts"
+    "merkle": "ts-node src/merkle.ts",
+    "clawback": "ts-node src/clawback.ts"
   },
   "repository": {
     "type": "git",
