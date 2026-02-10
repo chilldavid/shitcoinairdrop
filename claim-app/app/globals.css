@@ -134,6 +134,77 @@ main {
   color: #666;
 }
 
+/* Breakdown display */
+.breakdown {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: left;
+}
+
+.breakdown-title {
+  font-size: 0.875rem;
+  color: #888;
+  margin-bottom: 0.75rem;
+}
+
+.breakdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breakdown-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.breakdown-list li:last-child {
+  border-bottom: none;
+}
+
+.breakdown-list .token-name {
+  font-weight: 600;
+  color: var(--foreground);
+  min-width: 80px;
+}
+
+.breakdown-list .tier-badge {
+  background: rgba(124, 58, 237, 0.2);
+  color: #a78bfa;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.breakdown-list .pct {
+  color: #888;
+  flex: 1;
+  text-align: right;
+}
+
+.breakdown-list .points {
+  color: var(--success);
+  font-weight: 600;
+  min-width: 50px;
+  text-align: right;
+}
+
+.total-points {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+  text-align: right;
+  color: var(--foreground);
+}
+
 .claim-button {
   background: var(--primary);
   color: white;

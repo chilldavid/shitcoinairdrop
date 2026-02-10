@@ -3,10 +3,19 @@ import { PublicKey } from "@solana/web3.js";
 import fs from "fs";
 import path from "path";
 
+interface BreakdownEntry {
+  token: string;
+  tier: string;
+  pct: number;
+  points: number;
+}
+
 interface ProofEntry {
   index: number;
   amount: string;
   proof: string[];
+  points: number;
+  breakdown: BreakdownEntry[];
 }
 
 interface MerkleProofs {
@@ -60,6 +69,8 @@ export async function GET(
       index: entry.index,
       amount: entry.amount,
       proof: entry.proof,
+      points: entry.points,
+      breakdown: entry.breakdown,
     });
   } catch (err) {
     console.error("Proof API error:", err);

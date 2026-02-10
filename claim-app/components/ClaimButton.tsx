@@ -23,11 +23,20 @@ import {
   TOKEN_SYMBOL,
 } from "@/lib/constants";
 
+interface BreakdownEntry {
+  token: string;
+  tier: string;
+  pct: number;
+  points: number;
+}
+
 interface ProofData {
   eligible: boolean;
   index?: number;
   amount?: string;
   proof?: string[];
+  points?: number;
+  breakdown?: BreakdownEntry[];
   error?: string;
 }
 
@@ -330,6 +339,22 @@ export const ClaimButton: FC = () => {
       <p className="amount">
         {formatAmount(proofData.amount!)} {TOKEN_SYMBOL}
       </p>
+      {proofData.breakdown && proofData.breakdown.length > 0 && (
+        <div className="breakdown">
+          <p className="breakdown-title">Your holdings at snapshot:</p>
+          <ul className="breakdown-list">
+            {proofData.breakdown.map((entry, i) => (
+              <li key={i}>
+                <span className="token-name">{entry.token}</span>
+                <span className="tier-badge">{entry.tier}</span>
+                <span className="pct">{entry.pct.toFixed(4)}%</span>
+                <span className="points">{entry.points} pts</span>
+              </li>
+            ))}
+          </ul>
+          <p className="total-points">Total: {proofData.points} points</p>
+        </div>
+      )}
       <button
         onClick={handleClaim}
         disabled={claiming}

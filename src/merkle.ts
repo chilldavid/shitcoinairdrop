@@ -120,9 +120,15 @@ function main(): void {
     process.exit(1);
   }
 
-  const wallets: { index: number; wallet: string; amount: string; points: number }[] = JSON.parse(
-    fs.readFileSync(inputPath, "utf-8")
-  );
+  interface WalletEntry {
+    index: number;
+    wallet: string;
+    amount: string;
+    points: number;
+    breakdown?: { token: string; tier: string; pct: number; points: number }[];
+  }
+
+  const wallets: WalletEntry[] = JSON.parse(fs.readFileSync(inputPath, "utf-8"));
 
   if (wallets.length === 0) {
     console.error("No eligible wallets found in input file.");
@@ -177,12 +183,21 @@ function main(): void {
 
   // Also write a compact version for the frontend (root only + lookup by wallet)
   const lookupPath = `${config.outputDir}/merkle_proofs.json`;
-  const lookup: Record<string, { index: number; amount: string; proof: string[] }> = {};
+  const lookup: Record<string, {
+    index: number;
+    amount: string;
+    proof: string[];
+    points: number;
+    breakdown: { token: string; tier: string; pct: number; points: number }[];
+  }> = {};
   for (const leaf of result.leaves) {
+    const original = wallets.find((w) => w.wallet === leaf.wallet);
     lookup[leaf.wallet] = {
       index: leaf.index,
       amount: leaf.amount,
       proof: leaf.proof,
+      points: original?.points ?? 0,
+      breakdown: original?.breakdown ?? [],
     };
   }
   fs.writeFileSync(
