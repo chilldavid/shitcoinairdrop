@@ -105,6 +105,16 @@ async function main() {
   console.log("  Base Keypair:", base.publicKey.toBase58());
   console.log("  Distributor PDA:", distributorPda.toBase58());
 
+  // Detect token program (Token vs Token-2022) - must happen before ATA derivation
+  const mintInfo = await connection.getAccountInfo(CONFIG.tokenMint);
+  if (!mintInfo) {
+    console.error("Token mint not found");
+    process.exit(1);
+  }
+  const tokenProgramId = mintInfo.owner;
+  const isToken2022 = tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+  console.log("  Token Program:", isToken2022 ? "Token-2022" : "Token (classic)");
+
   // Derive the token vault (using correct token program)
   const tokenVault = getAssociatedTokenAddressSync(
     CONFIG.tokenMint,
@@ -130,16 +140,6 @@ async function main() {
   // Check admin balance
   const balance = await connection.getBalance(admin.publicKey);
   console.log("  Admin SOL Balance:", (balance / 1e9).toFixed(4), "SOL");
-
-  // Detect token program (Token vs Token-2022)
-  const mintInfo = await connection.getAccountInfo(CONFIG.tokenMint);
-  if (!mintInfo) {
-    console.error("Token mint not found");
-    process.exit(1);
-  }
-  const tokenProgramId = mintInfo.owner;
-  const isToken2022 = tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
-  console.log("  Token Program:", isToken2022 ? "Token-2022" : "Token (classic)");
 
   if (balance < 0.05 * 1e9) {
     console.error("Insufficient SOL balance. Need at least 0.05 SOL for rent and fees.");
