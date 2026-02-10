@@ -12,7 +12,8 @@
     "distribution": "ts-node src/distribution.ts",
     "merkle": "ts-node src/merkle.ts",
     "clawback": "ts-node src/clawback.ts",
-    "create-distributor": "ts-node src/create-distributor.ts"
+    "create-distributor": "ts-node src/create-distributor.ts",
+    "deploy-distributor": "ts-node src/deploy-distributor.ts"
   },
   "repository": {
     "type": "git",

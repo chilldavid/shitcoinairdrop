@@ -1,0 +1,21 @@
+[package]
+name = "merkle-claim"
+version = "0.1.0"
+description = "Token-2022 compatible merkle airdrop claim program"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "merkle_claim"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.30.1"
+anchor-spl = { version = "0.30.1", features = ["token_2022"] }
+solana-program = "1.18"
