@@ -11,7 +11,7 @@ export const DISTRIBUTOR_PUBKEY = new PublicKey(
 );
 
 export const TOKEN_MINT = new PublicKey(
-  "11111111111111111111111111111111" // REPLACE with your airdrop token mint
+  "9XEk9BFJQ6d9zuFxMqekmxitx8a8aXvf4XHddEC86AFf"
 );
 
 // RPC endpoint (use your Helius key or other provider)
@@ -25,7 +25,7 @@ export const TOKEN_SYMBOL = "AIRDROP"; // REPLACE with your token symbol
 // Clawback configuration
 // Set this to your admin wallet that will receive unclaimed tokens
 export const CLAWBACK_RECEIVER = new PublicKey(
-  "11111111111111111111111111111111" // REPLACE with your admin wallet
+  "53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"
 );
 
 // Claim deadline - users must claim before this date
