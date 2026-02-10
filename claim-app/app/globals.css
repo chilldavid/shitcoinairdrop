@@ -171,7 +171,6 @@ main {
 .breakdown-list .token-name {
   font-weight: 600;
   color: var(--foreground);
-  min-width: 80px;
 }
 
 .breakdown-list .tier-badge {
@@ -181,28 +180,7 @@ main {
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 500;
-}
-
-.breakdown-list .pct {
-  color: #888;
-  flex: 1;
-  text-align: right;
-}
-
-.breakdown-list .points {
-  color: var(--success);
-  font-weight: 600;
-  min-width: 50px;
-  text-align: right;
-}
-
-.total-points {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--border);
-  font-weight: 600;
-  text-align: right;
-  color: var(--foreground);
+  margin-left: auto;
 }
 
 .claim-button {

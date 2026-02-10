@@ -347,12 +347,9 @@ export const ClaimButton: FC = () => {
               <li key={i}>
                 <span className="token-name">{entry.token}</span>
                 <span className="tier-badge">{entry.tier}</span>
-                <span className="pct">{entry.pct.toFixed(4)}%</span>
-                <span className="points">{entry.points} pts</span>
               </li>
             ))}
           </ul>
-          <p className="total-points">Total: {proofData.points} points</p>
         </div>
       )}
       <button
