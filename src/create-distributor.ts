@@ -206,12 +206,23 @@ async function main() {
   data.writeBigUInt64LE(BigInt(0), offset);
 
   // Check if clawback receiver ATA exists, create if not
-  // Must verify it's actually a token account (owned by token program), not just any account
+  // Must verify it's actually a token account for the CORRECT mint, not just any account
   const clawbackAtaInfo = await connection.getAccountInfo(clawbackReceiverAta);
   const instructions: TransactionInstruction[] = [];
 
-  const isValidTokenAccount = clawbackAtaInfo &&
-    (clawbackAtaInfo.owner.equals(TOKEN_PROGRAM_ID) || clawbackAtaInfo.owner.equals(TOKEN_2022_PROGRAM_ID));
+  let isValidTokenAccount = false;
+  if (clawbackAtaInfo &&
+      (clawbackAtaInfo.owner.equals(TOKEN_PROGRAM_ID) || clawbackAtaInfo.owner.equals(TOKEN_2022_PROGRAM_ID))) {
+    // Check if this is a token account (not a mint) by verifying the mint field matches
+    // Token account layout: first 32 bytes = mint pubkey
+    if (clawbackAtaInfo.data.length >= 32) {
+      const accountMint = new PublicKey(clawbackAtaInfo.data.slice(0, 32));
+      isValidTokenAccount = accountMint.equals(CONFIG.tokenMint);
+      if (!isValidTokenAccount) {
+        console.log("  Found account at ATA address but mint doesn't match (might be a different token or mint account)");
+      }
+    }
+  }
 
   if (!isValidTokenAccount) {
     console.log("  Creating clawback receiver token account...");
@@ -226,7 +237,7 @@ async function main() {
       )
     );
   } else {
-    console.log("  Clawback receiver ATA already exists.");
+    console.log("  Clawback receiver ATA already exists and is valid.");
   }
 
   const newDistributorIx = new TransactionInstruction({
