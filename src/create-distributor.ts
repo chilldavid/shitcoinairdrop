@@ -206,10 +206,14 @@ async function main() {
   data.writeBigUInt64LE(BigInt(0), offset);
 
   // Check if clawback receiver ATA exists, create if not
+  // Must verify it's actually a token account (owned by token program), not just any account
   const clawbackAtaInfo = await connection.getAccountInfo(clawbackReceiverAta);
   const instructions: TransactionInstruction[] = [];
 
-  if (!clawbackAtaInfo) {
+  const isValidTokenAccount = clawbackAtaInfo &&
+    (clawbackAtaInfo.owner.equals(TOKEN_PROGRAM_ID) || clawbackAtaInfo.owner.equals(TOKEN_2022_PROGRAM_ID));
+
+  if (!isValidTokenAccount) {
     console.log("  Creating clawback receiver token account...");
     instructions.push(
       createAssociatedTokenAccountInstruction(
@@ -221,6 +225,8 @@ async function main() {
         ASSOCIATED_TOKEN_PROGRAM_ID
       )
     );
+  } else {
+    console.log("  Clawback receiver ATA already exists.");
   }
 
   const newDistributorIx = new TransactionInstruction({
