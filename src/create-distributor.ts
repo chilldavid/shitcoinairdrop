@@ -22,6 +22,7 @@ import {
 import * as fs from "fs";
 import * as dotenv from "dotenv";
 import bs58 from "bs58";
+import { createHash } from "crypto";
 
 dotenv.config();
 
@@ -40,10 +41,12 @@ const CONFIG = {
   clawbackReceiver: new PublicKey("53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"),
 };
 
-// New Distributor instruction discriminator
-const NEW_DISTRIBUTOR_DISCRIMINATOR = Buffer.from([
-  0x20, 0x6d, 0x97, 0xe5, 0x9f, 0xf6, 0xf1, 0xaa,
-]);
+// Calculate Anchor discriminator: sha256("global:new_distributor")[0..8]
+function getDiscriminator(name: string): Buffer {
+  const disc = createHash("sha256").update(`global:${name}`).digest().slice(0, 8);
+  console.log(`  Discriminator for "${name}": ${disc.toString("hex")}`);
+  return disc;
+}
 
 function loadKeypair(): Keypair {
   // Try private key from env first
@@ -119,27 +122,27 @@ async function main() {
   }
 
   // Build the new_distributor instruction
-  // Data layout:
+  // Data layout from Jito distributor:
   // - 8 bytes: discriminator
-  // - 1 byte: version (0)
+  // - 1 byte: version
   // - 32 bytes: root
-  // - 8 bytes: max_total_claim
-  // - 8 bytes: max_num_nodes
-  // - 8 bytes: unlock_time (0 for immediate)
-  // - 8 bytes: start_vesting_ts (0)
-  // - 8 bytes: end_vesting_ts (0)
-  // - 8 bytes: clawback_start_ts
-  // - 1 byte: clawback_receiver_owner (0 = admin)
-  // - 1 byte: enable_slot (0)
+  // - 8 bytes: max_total_claim (u64)
+  // - 8 bytes: max_num_nodes (u64)
+  // - 8 bytes: unlock_time (i64)
+  // - 8 bytes: start_vesting_ts (i64)
+  // - 8 bytes: end_vesting_ts (i64)
+  // - 8 bytes: clawback_start_ts (i64)
+  // - 8 bytes: enable_slot (u64)
 
   const rootBuffer = Buffer.from(CONFIG.merkleRoot, "hex");
+  const discriminator = getDiscriminator("new_distributor");
 
-  const dataLength = 8 + 1 + 32 + 8 + 8 + 8 + 8 + 8 + 8 + 1 + 1;
+  const dataLength = 8 + 1 + 32 + 8 + 8 + 8 + 8 + 8 + 8 + 8;
   const data = Buffer.alloc(dataLength);
   let offset = 0;
 
   // Discriminator
-  NEW_DISTRIBUTOR_DISCRIMINATOR.copy(data, offset);
+  discriminator.copy(data, offset);
   offset += 8;
 
   // Version
@@ -159,27 +162,23 @@ async function main() {
   offset += 8;
 
   // unlock_time (0 = immediate)
-  data.writeBigUInt64LE(BigInt(0), offset);
+  data.writeBigInt64LE(BigInt(0), offset);
   offset += 8;
 
   // start_vesting_ts (0 = no vesting)
-  data.writeBigUInt64LE(BigInt(0), offset);
+  data.writeBigInt64LE(BigInt(0), offset);
   offset += 8;
 
   // end_vesting_ts (0 = no vesting)
-  data.writeBigUInt64LE(BigInt(0), offset);
+  data.writeBigInt64LE(BigInt(0), offset);
   offset += 8;
 
   // clawback_start_ts
-  data.writeBigUInt64LE(CONFIG.clawbackStartTs, offset);
+  data.writeBigInt64LE(CONFIG.clawbackStartTs, offset);
   offset += 8;
 
-  // clawback_receiver_owner (0 = use admin as clawback receiver)
-  data.writeUInt8(0, offset);
-  offset += 1;
-
   // enable_slot (0 = disabled)
-  data.writeUInt8(0, offset);
+  data.writeBigUInt64LE(BigInt(0), offset);
 
   const newDistributorIx = new TransactionInstruction({
     programId: MERKLE_DISTRIBUTOR_PROGRAM_ID,
@@ -189,9 +188,10 @@ async function main() {
       { pubkey: CONFIG.tokenMint, isSigner: false, isWritable: false },
       { pubkey: tokenVault, isSigner: false, isWritable: true },
       { pubkey: admin.publicKey, isSigner: true, isWritable: true },
+      { pubkey: CONFIG.clawbackReceiver, isSigner: false, isWritable: false }, // clawback_receiver
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
       { pubkey: new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"), isSigner: false, isWritable: false }, // Associated Token Program
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
     ],
     data,
   });
