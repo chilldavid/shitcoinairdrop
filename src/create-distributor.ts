@@ -127,6 +127,11 @@ async function main() {
   console.log("  Token Vault:", tokenVault.toBase58());
 
   // Derive the clawback receiver's token account (ATA)
+  console.log("  DEBUG - ATA derivation inputs:");
+  console.log("    Mint:", CONFIG.tokenMint.toBase58());
+  console.log("    Owner:", CONFIG.clawbackReceiver.toBase58());
+  console.log("    Token Program:", tokenProgramId.toBase58());
+
   const clawbackReceiverAta = getAssociatedTokenAddressSync(
     CONFIG.tokenMint,
     CONFIG.clawbackReceiver,
@@ -211,6 +216,22 @@ async function main() {
   const instructions: TransactionInstruction[] = [];
 
   let isValidTokenAccount = false;
+  console.log("  DEBUG - Checking ATA at:", clawbackReceiverAta.toBase58());
+  if (clawbackAtaInfo) {
+    console.log("    Account exists, owner:", clawbackAtaInfo.owner.toBase58());
+    console.log("    Data length:", clawbackAtaInfo.data.length);
+    if (clawbackAtaInfo.data.length >= 32) {
+      const accountMint = new PublicKey(clawbackAtaInfo.data.slice(0, 32));
+      console.log("    First 32 bytes (mint?):", accountMint.toBase58());
+    }
+    if (clawbackAtaInfo.data.length >= 64) {
+      const accountOwner = new PublicKey(clawbackAtaInfo.data.slice(32, 64));
+      console.log("    Bytes 32-64 (owner?):", accountOwner.toBase58());
+    }
+  } else {
+    console.log("    Account does NOT exist");
+  }
+
   if (clawbackAtaInfo &&
       (clawbackAtaInfo.owner.equals(TOKEN_PROGRAM_ID) || clawbackAtaInfo.owner.equals(TOKEN_2022_PROGRAM_ID))) {
     // Check if this is a token account (not a mint) by verifying the mint field matches
