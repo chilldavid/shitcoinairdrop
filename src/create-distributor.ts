@@ -18,6 +18,9 @@ import {
   getAssociatedTokenAddress,
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import * as fs from "fs";
 import * as dotenv from "dotenv";
@@ -102,19 +105,24 @@ async function main() {
   console.log("  Base Keypair:", base.publicKey.toBase58());
   console.log("  Distributor PDA:", distributorPda.toBase58());
 
-  // Derive the token vault
-  const tokenVault = await getAssociatedTokenAddress(
+  // Derive the token vault (using correct token program)
+  const tokenVault = getAssociatedTokenAddressSync(
     CONFIG.tokenMint,
     distributorPda,
-    true // allowOwnerOffCurve
+    true, // allowOwnerOffCurve
+    tokenProgramId,
+    ASSOCIATED_TOKEN_PROGRAM_ID
   );
 
   console.log("  Token Vault:", tokenVault.toBase58());
 
   // Derive the clawback receiver's token account (ATA)
-  const clawbackReceiverAta = await getAssociatedTokenAddress(
+  const clawbackReceiverAta = getAssociatedTokenAddressSync(
     CONFIG.tokenMint,
-    CONFIG.clawbackReceiver
+    CONFIG.clawbackReceiver,
+    false,
+    tokenProgramId,
+    ASSOCIATED_TOKEN_PROGRAM_ID
   );
   console.log("  Clawback Receiver ATA:", clawbackReceiverAta.toBase58());
   console.log("");
@@ -122,6 +130,16 @@ async function main() {
   // Check admin balance
   const balance = await connection.getBalance(admin.publicKey);
   console.log("  Admin SOL Balance:", (balance / 1e9).toFixed(4), "SOL");
+
+  // Detect token program (Token vs Token-2022)
+  const mintInfo = await connection.getAccountInfo(CONFIG.tokenMint);
+  if (!mintInfo) {
+    console.error("Token mint not found");
+    process.exit(1);
+  }
+  const tokenProgramId = mintInfo.owner;
+  const isToken2022 = tokenProgramId.equals(TOKEN_2022_PROGRAM_ID);
+  console.log("  Token Program:", isToken2022 ? "Token-2022" : "Token (classic)");
 
   if (balance < 0.05 * 1e9) {
     console.error("Insufficient SOL balance. Need at least 0.05 SOL for rent and fees.");
@@ -198,7 +216,9 @@ async function main() {
         admin.publicKey,
         clawbackReceiverAta,
         CONFIG.clawbackReceiver,
-        CONFIG.tokenMint
+        CONFIG.tokenMint,
+        tokenProgramId,
+        ASSOCIATED_TOKEN_PROGRAM_ID
       )
     );
   }
@@ -213,8 +233,8 @@ async function main() {
       { pubkey: admin.publicKey, isSigner: true, isWritable: true },
       { pubkey: clawbackReceiverAta, isSigner: false, isWritable: false }, // clawback_receiver TOKEN ACCOUNT
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-      { pubkey: new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"), isSigner: false, isWritable: false }, // Associated Token Program
-      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // Associated Token Program
+      { pubkey: tokenProgramId, isSigner: false, isWritable: false }, // Token Program (classic or 2022)
     ],
     data,
   });
