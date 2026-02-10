@@ -15,7 +15,7 @@
  */
 import fs from "fs";
 import { PublicKey } from "@solana/web3.js";
-import { keccak_256 } from "@noble/hashes/sha3";
+import keccak256 from "keccak256";
 import { config } from "./config";
 
 // --- Merkle Tree Implementation ---
@@ -26,13 +26,13 @@ function hashLeaf(index: bigint, claimant: Buffer, amount: bigint): Buffer {
   buf.writeBigUInt64LE(index, 0);
   claimant.copy(buf, 8);
   buf.writeBigUInt64LE(amount, 40);
-  return Buffer.from(keccak_256(buf));
+  return keccak256(buf);
 }
 
 function hashPair(a: Buffer, b: Buffer): Buffer {
   // Sort the pair for deterministic ordering
   const [first, second] = Buffer.compare(a, b) <= 0 ? [a, b] : [b, a];
-  return Buffer.from(keccak_256(Buffer.concat([first, second])));
+  return keccak256(Buffer.concat([first, second]));
 }
 
 interface MerkleLeaf {
