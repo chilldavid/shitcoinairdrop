@@ -110,6 +110,13 @@ async function main() {
   );
 
   console.log("  Token Vault:", tokenVault.toBase58());
+
+  // Derive the clawback receiver's token account (ATA)
+  const clawbackReceiverAta = await getAssociatedTokenAddress(
+    CONFIG.tokenMint,
+    CONFIG.clawbackReceiver
+  );
+  console.log("  Clawback Receiver ATA:", clawbackReceiverAta.toBase58());
   console.log("");
 
   // Check admin balance
@@ -180,6 +187,22 @@ async function main() {
   // enable_slot (0 = disabled)
   data.writeBigUInt64LE(BigInt(0), offset);
 
+  // Check if clawback receiver ATA exists, create if not
+  const clawbackAtaInfo = await connection.getAccountInfo(clawbackReceiverAta);
+  const instructions: TransactionInstruction[] = [];
+
+  if (!clawbackAtaInfo) {
+    console.log("  Creating clawback receiver token account...");
+    instructions.push(
+      createAssociatedTokenAccountInstruction(
+        admin.publicKey,
+        clawbackReceiverAta,
+        CONFIG.clawbackReceiver,
+        CONFIG.tokenMint
+      )
+    );
+  }
+
   const newDistributorIx = new TransactionInstruction({
     programId: MERKLE_DISTRIBUTOR_PROGRAM_ID,
     keys: [
@@ -188,15 +211,16 @@ async function main() {
       { pubkey: CONFIG.tokenMint, isSigner: false, isWritable: false },
       { pubkey: tokenVault, isSigner: false, isWritable: true },
       { pubkey: admin.publicKey, isSigner: true, isWritable: true },
-      { pubkey: CONFIG.clawbackReceiver, isSigner: false, isWritable: false }, // clawback_receiver
+      { pubkey: clawbackReceiverAta, isSigner: false, isWritable: false }, // clawback_receiver TOKEN ACCOUNT
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       { pubkey: new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"), isSigner: false, isWritable: false }, // Associated Token Program
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
     ],
     data,
   });
+  instructions.push(newDistributorIx);
 
-  const transaction = new Transaction().add(newDistributorIx);
+  const transaction = new Transaction().add(...instructions);
 
   // Simulate first
   console.log("Simulating transaction...");
