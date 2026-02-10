@@ -11,7 +11,8 @@
     "supply": "ts-node src/supply.ts",
     "distribution": "ts-node src/distribution.ts",
     "merkle": "ts-node src/merkle.ts",
-    "clawback": "ts-node src/clawback.ts"
+    "clawback": "ts-node src/clawback.ts",
+    "create-distributor": "ts-node src/create-distributor.ts"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.1.0",
     "better-sqlite3": "^12.6.2",
+    "bs58": "^5.0.0",
     "dotenv": "^17.2.3",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.6.0",
