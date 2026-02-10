@@ -36,7 +36,7 @@ const MERKLE_DISTRIBUTOR_PROGRAM_ID = new PublicKey(
 
 // Configuration - UPDATE THESE VALUES
 const CONFIG = {
-  tokenMint: new PublicKey("9XEk9BFJQ6d9zuFxMqekmxitx8a8aXvf4XHddEC86AFf"),
+  tokenMint: new PublicKey("9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"),
   merkleRoot: "3da7641a2461ebe6e0140dc4dedbab928a048d18abcce05100832b0d3baf0028",
   maxTotalClaim: BigInt("70000000000"), // 70,000 tokens with 6 decimals
   maxNumNodes: BigInt(93107),

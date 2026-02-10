@@ -11,7 +11,7 @@ export const DISTRIBUTOR_PUBKEY = new PublicKey(
 );
 
 export const TOKEN_MINT = new PublicKey(
-  "9XEk9BFJQ6d9zuFxMqekmxitx8a8aXvf4XHddEC86AFf"
+  "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"
 );
 
 // RPC endpoint (use your Helius key or other provider)
