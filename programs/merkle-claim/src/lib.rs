@@ -59,7 +59,7 @@ pub mod merkle_claim {
         require!(!distributor.paused, ClaimError::Paused);
 
         // Verify the merkle proof
-        let leaf = solana_program::keccak::hashv(&[
+        let leaf = anchor_lang::solana_program::keccak::hashv(&[
             &index.to_le_bytes(),
             &ctx.accounts.claimant.key().to_bytes(),
             &amount.to_le_bytes(),
@@ -68,9 +68,9 @@ pub mod merkle_claim {
         let mut computed_hash = leaf.0;
         for proof_element in proof.iter() {
             if computed_hash <= *proof_element {
-                computed_hash = solana_program::keccak::hashv(&[&computed_hash, proof_element]).0;
+                computed_hash = anchor_lang::solana_program::keccak::hashv(&[&computed_hash, proof_element]).0;
             } else {
-                computed_hash = solana_program::keccak::hashv(&[proof_element, &computed_hash]).0;
+                computed_hash = anchor_lang::solana_program::keccak::hashv(&[proof_element, &computed_hash]).0;
             }
         }
 
