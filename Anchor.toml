@@ -8,10 +8,10 @@ skip-lint = false
 members = ["programs/merkle-claim"]
 
 [programs.devnet]
-merkle_claim = "CLAiM1111111111111111111111111111111111111"
+merkle_claim = "C1aiMKM4Z3gF1rU2rFQBfpDqFqrX3TF7q5XpNnMvpump"
 
 [programs.mainnet]
-merkle_claim = "CLAiM1111111111111111111111111111111111111"
+merkle_claim = "C1aiMKM4Z3gF1rU2rFQBfpDqFqrX3TF7q5XpNnMvpump"
 
 [registry]
 url = "https://api.apr.dev"

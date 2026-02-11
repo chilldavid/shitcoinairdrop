@@ -4,7 +4,7 @@ use anchor_spl::{
     token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked, transfer_checked},
 };
 
-declare_id!("CLAiM1111111111111111111111111111111111111"); // Placeholder - will be updated after build
+declare_id!("C1aiMKM4Z3gF1rU2rFQBfpDqFqrX3TF7q5XpNnMvpump"); // Placeholder - will be updated after build
 
 /// Merkle Claim Program - Token-2022 Compatible
 ///
