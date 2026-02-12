@@ -52,8 +52,8 @@ export const RPC_ENDPOINT = IS_DEVNET
   ? "https://api.devnet.solana.com"
   : process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
 
-// Token decimals (devnet test token has 9 decimals, mainnet has 6)
-export const TOKEN_DECIMALS = IS_DEVNET ? 9 : 6;
+// Token decimals - set to 0 for points-based display
+export const TOKEN_DECIMALS = 0;
 export const TOKEN_SYMBOL = "AIRDROP";
 
 // Clawback configuration
