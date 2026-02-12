@@ -13,9 +13,9 @@ export const TOKEN_2022_PROGRAM_ID = new PublicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
-// Devnet test token
+// Devnet test token (200M with real amounts)
 const DEVNET_TOKEN_MINT = new PublicKey(
-  "CRUhHW8R9BdHproQ1kfWxqyptaBcWmuJfcyVd9D2rr2s"
+  "BtJ2q8R15HbtAMMdwpvq7zZ8Z2rxbvmHh4ajoFv6CPE8"
 );
 
 // Mainnet pump.fun token
@@ -52,8 +52,8 @@ export const RPC_ENDPOINT = IS_DEVNET
   ? "https://api.devnet.solana.com"
   : process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
 
-// Token decimals - set to 0 for points-based display
-export const TOKEN_DECIMALS = 0;
+// Token decimals (9 for devnet test token, 6 for mainnet)
+export const TOKEN_DECIMALS = 9;
 export const TOKEN_SYMBOL = "AIRDROP";
 
 // Clawback configuration
