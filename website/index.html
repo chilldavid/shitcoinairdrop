@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shitcoin Safari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Press Start 2P', monospace;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #1a3a1a;
+      image-rendering: pixelated;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      background-image: url('../assets/website/banner_logo.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.3) 40%,
+        rgba(0, 0, 0, 0.65) 75%,
+        rgba(0, 0, 0, 0.8) 100%
+      );
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100vh;
+      padding-bottom: 8vh;
+      gap: 28px;
+    }
+
+    /* Play Now Button */
+    .play-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 28px;
+      color: #fff;
+      background: #e8a820;
+      border: none;
+      padding: 18px 54px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      position: relative;
+      transition: transform 0.1s;
+      box-shadow:
+        inset -4px -4px 0 #b07818,
+        inset 4px 4px 0 #fcd868,
+        0 0 0 4px #5a3a08,
+        0 6px 0 4px #3a2204,
+        0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .play-btn:hover {
+      transform: translateY(-2px);
+      background: #fcd868;
+      box-shadow:
+        inset -4px -4px 0 #e8a820,
+        inset 4px 4px 0 #fff8b0,
+        0 0 0 4px #5a3a08,
+        0 8px 0 4px #3a2204,
+        0 10px 30px rgba(232, 168, 32, 0.4);
+    }
+
+    .play-btn:active {
+      transform: translateY(2px);
+      box-shadow:
+        inset -4px -4px 0 #b07818,
+        inset 4px 4px 0 #fcd868,
+        0 0 0 4px #5a3a08,
+        0 2px 0 4px #3a2204,
+        0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Contract Address Bar */
+    .contract-bar {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid #5a3a08;
+      box-shadow:
+        inset 0 0 0 2px #3a2204,
+        0 4px 15px rgba(0, 0, 0, 0.5);
+      padding: 0;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .contract-label {
+      font-size: 8px;
+      color: #b07818;
+      padding: 12px 14px;
+      white-space: nowrap;
+      border-right: 2px solid #3a2204;
+      background: rgba(90, 58, 8, 0.3);
+    }
+
+    .contract-address {
+      font-size: 9px;
+      color: #e8a820;
+      padding: 12px 14px;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: all;
+      min-width: 0;
+    }
+
+    .copy-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: #fff;
+      background: #5a3a08;
+      border: none;
+      border-left: 2px solid #3a2204;
+      padding: 12px 16px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: #b07818;
+    }
+
+    .copy-btn.copied {
+      background: #2a7a2a;
+      color: #aaffaa;
+    }
+
+    /* Scanline overlay for retro CRT feel */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.06) 2px,
+        rgba(0, 0, 0, 0.06) 4px
+      );
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .play-btn {
+        font-size: 20px;
+        padding: 14px 36px;
+      }
+
+      .contract-label {
+        font-size: 6px;
+        padding: 10px 8px;
+      }
+
+      .contract-address {
+        font-size: 7px;
+        padding: 10px 8px;
+      }
+
+      .copy-btn {
+        font-size: 6px;
+        padding: 10px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="overlay"></div>
+
+  <div class="content">
+    <button class="play-btn" onclick="playNow()">Play Now</button>
+
+    <div class="contract-bar">
+      <span class="contract-label">CA</span>
+      <span class="contract-address" id="contractAddress">9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyAddress()">COPY</button>
+    </div>
+  </div>
+
+  <div class="scanlines"></div>
+
+  <script>
+    const CONTRACT_ADDRESS = '9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump';
+
+    function copyAddress() {
+      navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'COPIED!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'COPY';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function playNow() {
+      // Placeholder - wire up to game launch
+    }
+  </script>
+</body>
+</html>
