@@ -29,7 +29,10 @@ let cachedProofs: MerkleProofs | null = null;
 function loadProofs(): MerkleProofs {
   if (cachedProofs) return cachedProofs;
 
-  const proofsPath = path.join(process.cwd(), "..", "output", "merkle_proofs.json");
+  // Try claim-app/data first (for Vercel), then fall back to ../output (local dev)
+  const vercelPath = path.join(process.cwd(), "data", "merkle_proofs.json");
+  const localPath = path.join(process.cwd(), "..", "output", "merkle_proofs.json");
+  const proofsPath = fs.existsSync(vercelPath) ? vercelPath : localPath;
 
   if (!fs.existsSync(proofsPath)) {
     throw new Error("Merkle proofs file not found. Run `npm run merkle` first.");

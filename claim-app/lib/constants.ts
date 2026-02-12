@@ -1,42 +1,77 @@
 import { PublicKey } from "@solana/web3.js";
 
-// Jito/OpenSea Merkle Distributor program (already deployed on mainnet)
-export const MERKLE_DISTRIBUTOR_PROGRAM_ID = new PublicKey(
-  "mERKcfxMC5SqJn4Ld4BUris3WKZZ1ojjWJ3A3J5CKxv"
+// DEVNET TEST CONFIG - Change to mainnet values when ready
+const IS_DEVNET = true;
+
+// Custom Token-2022 compatible Merkle Claim program
+export const MERKLE_CLAIM_PROGRAM_ID = new PublicKey(
+  "DyyLURFK28R8GoTwpPsxHKydyhJ2SzYFJ17451B7he85"
 );
 
-// TODO: Replace these after deploying your distributor instance
-export const DISTRIBUTOR_PUBKEY = new PublicKey(
-  "11111111111111111111111111111111" // REPLACE with your distributor PDA
+// Token-2022 Program ID
+export const TOKEN_2022_PROGRAM_ID = new PublicKey(
+  "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
-export const TOKEN_MINT = new PublicKey(
+// Devnet test token
+const DEVNET_TOKEN_MINT = new PublicKey(
+  "CRUhHW8R9BdHproQ1kfWxqyptaBcWmuJfcyVd9D2rr2s"
+);
+
+// Mainnet pump.fun token
+const MAINNET_TOKEN_MINT = new PublicKey(
   "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"
 );
 
-// RPC endpoint (use your Helius key or other provider)
-export const RPC_ENDPOINT =
-  process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
+export const TOKEN_MINT = IS_DEVNET ? DEVNET_TOKEN_MINT : MAINNET_TOKEN_MINT;
 
-// Token decimals for display
-export const TOKEN_DECIMALS = 6;
-export const TOKEN_SYMBOL = "AIRDROP"; // REPLACE with your token symbol
+// Authority that created the distributor (Playground wallet for devnet)
+const DEVNET_AUTHORITY = new PublicKey(
+  "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
+);
+
+// Admin wallet for mainnet
+const MAINNET_AUTHORITY = new PublicKey(
+  "53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"
+);
+
+export const DISTRIBUTOR_AUTHORITY = IS_DEVNET ? DEVNET_AUTHORITY : MAINNET_AUTHORITY;
+
+// Derive the distributor PDA: ["distributor", mint, authority]
+export const [DISTRIBUTOR_PUBKEY] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("distributor"),
+    TOKEN_MINT.toBuffer(),
+    DISTRIBUTOR_AUTHORITY.toBuffer(),
+  ],
+  MERKLE_CLAIM_PROGRAM_ID
+);
+
+// RPC endpoint
+export const RPC_ENDPOINT = IS_DEVNET
+  ? "https://api.devnet.solana.com"
+  : process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
+
+// Token decimals (devnet test token has 9 decimals, mainnet has 6)
+export const TOKEN_DECIMALS = IS_DEVNET ? 9 : 6;
+export const TOKEN_SYMBOL = "AIRDROP";
 
 // Clawback configuration
-// Set this to your admin wallet that will receive unclaimed tokens
 export const CLAWBACK_RECEIVER = new PublicKey(
   "53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"
 );
 
-// Claim deadline - users must claim before this date
-// After this timestamp, admin can call clawback to recover unclaimed tokens
 export const CLAWBACK_START_TS = Math.floor(
-  new Date("2025-05-01T00:00:00Z").getTime() / 1000 // REPLACE with your deadline
+  new Date("2025-05-01T00:00:00Z").getTime() / 1000
 );
 
-// Human-readable deadline for display
 export const CLAIM_DEADLINE = new Date(CLAWBACK_START_TS * 1000).toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
+
+// For explorer links
+export const EXPLORER_URL = IS_DEVNET
+  ? "https://solscan.io/tx/{signature}?cluster=devnet"
+  : "https://solscan.io/tx/{signature}";

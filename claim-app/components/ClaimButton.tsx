@@ -10,18 +10,20 @@ import {
   SystemProgram,
 } from "@solana/web3.js";
 import {
-  getAssociatedTokenAddress,
+  getAssociatedTokenAddressSync,
   createAssociatedTokenAccountInstruction,
-  TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
-  MERKLE_DISTRIBUTOR_PROGRAM_ID,
+  MERKLE_CLAIM_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
   DISTRIBUTOR_PUBKEY,
   TOKEN_MINT,
   TOKEN_DECIMALS,
   TOKEN_SYMBOL,
+  EXPLORER_URL,
 } from "@/lib/constants";
+import { createHash } from "crypto";
 
 interface BreakdownEntry {
   token: string;
@@ -42,6 +44,14 @@ interface ProofData {
 
 interface ClaimStatus {
   hasClaimed: boolean;
+}
+
+// Calculate Anchor discriminator
+function getDiscriminator(name: string): Buffer {
+  const preimage = `global:${name}`;
+  return Buffer.from(
+    createHash("sha256").update(preimage).digest()
+  ).slice(0, 8);
 }
 
 export const ClaimButton: FC = () => {
@@ -84,21 +94,24 @@ export const ClaimButton: FC = () => {
 
   // Check if user has already claimed
   useEffect(() => {
-    if (!publicKey || !proofData?.eligible) {
+    if (!publicKey || !proofData?.eligible || proofData.index === undefined) {
       setClaimStatus(null);
       return;
     }
 
     const checkClaimStatus = async () => {
       try {
-        // Derive ClaimStatus PDA
+        // Derive ClaimStatus PDA: ["claim", distributor, index]
+        const indexBytes = Buffer.alloc(8);
+        indexBytes.writeBigUInt64LE(BigInt(proofData.index!), 0);
+
         const [claimStatusPda] = PublicKey.findProgramAddressSync(
           [
-            Buffer.from("ClaimStatus"),
+            Buffer.from("claim"),
             DISTRIBUTOR_PUBKEY.toBuffer(),
-            publicKey.toBuffer(),
+            indexBytes,
           ],
-          MERKLE_DISTRIBUTOR_PROGRAM_ID
+          MERKLE_CLAIM_PROGRAM_ID
         );
 
         // Check if the account exists (means already claimed)
@@ -125,52 +138,57 @@ export const ClaimButton: FC = () => {
         throw new Error("Invalid proof data");
       }
 
-      // Derive PDAs
-      const [distributorPda] = PublicKey.findProgramAddressSync(
-        [Buffer.from("MerkleDistributor"), DISTRIBUTOR_PUBKEY.toBuffer()],
-        MERKLE_DISTRIBUTOR_PROGRAM_ID
-      );
+      // Derive ClaimStatus PDA: ["claim", distributor, index]
+      const indexBytes = Buffer.alloc(8);
+      indexBytes.writeBigUInt64LE(BigInt(index), 0);
 
       const [claimStatusPda] = PublicKey.findProgramAddressSync(
         [
-          Buffer.from("ClaimStatus"),
+          Buffer.from("claim"),
           DISTRIBUTOR_PUBKEY.toBuffer(),
-          publicKey.toBuffer(),
+          indexBytes,
         ],
-        MERKLE_DISTRIBUTOR_PROGRAM_ID
+        MERKLE_CLAIM_PROGRAM_ID
       );
 
-      // Get token accounts
-      const vault = await getAssociatedTokenAddress(
+      // Get vault ATA (owned by distributor)
+      const vault = getAssociatedTokenAddressSync(
         TOKEN_MINT,
         DISTRIBUTOR_PUBKEY,
-        true // allowOwnerOffCurve for PDA
+        true, // allowOwnerOffCurve for PDA
+        TOKEN_2022_PROGRAM_ID,
+        ASSOCIATED_TOKEN_PROGRAM_ID
       );
 
-      const userAta = await getAssociatedTokenAddress(TOKEN_MINT, publicKey);
-
-      // Check if user has an ATA, if not we need to create it
-      const userAtaInfo = await connection.getAccountInfo(userAta);
+      // User's ATA
+      const userAta = getAssociatedTokenAddressSync(
+        TOKEN_MINT,
+        publicKey,
+        false,
+        TOKEN_2022_PROGRAM_ID,
+        ASSOCIATED_TOKEN_PROGRAM_ID
+      );
 
       const instructions: TransactionInstruction[] = [];
 
-      // Create ATA if it doesn't exist
+      // Check if user has an ATA, if not create it
+      const userAtaInfo = await connection.getAccountInfo(userAta);
       if (!userAtaInfo) {
         instructions.push(
           createAssociatedTokenAccountInstruction(
             publicKey, // payer
             userAta, // ata address
             publicKey, // owner
-            TOKEN_MINT // mint
+            TOKEN_MINT, // mint
+            TOKEN_2022_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID
           )
         );
       }
 
       // Build claim instruction data
       // Layout: 8-byte discriminator + u64 index + u64 amount + Vec<[u8; 32]> proof
-      const discriminator = Buffer.from([62, 198, 214, 193, 213, 159, 108, 210]); // claim instruction
-      const indexBuf = Buffer.alloc(8);
-      indexBuf.writeBigUInt64LE(BigInt(index), 0);
+      const discriminator = getDiscriminator("claim");
       const amountBuf = Buffer.alloc(8);
       amountBuf.writeBigUInt64LE(BigInt(amount), 0);
 
@@ -178,22 +196,33 @@ export const ClaimButton: FC = () => {
       const proofBufs = proof.map((p) => Buffer.from(p, "hex"));
       const proofLenBuf = Buffer.alloc(4);
       proofLenBuf.writeUInt32LE(proofBufs.length, 0);
-      const proofData = Buffer.concat([proofLenBuf, ...proofBufs]);
+      const proofDataBuf = Buffer.concat([proofLenBuf, ...proofBufs]);
 
-      const data = Buffer.concat([discriminator, indexBuf, amountBuf, proofData]);
+      const data = Buffer.concat([discriminator, indexBytes, amountBuf, proofDataBuf]);
 
       // Build claim instruction
+      // Accounts order from our Anchor program:
+      // 1. claimant (signer, mut)
+      // 2. distributor (mut)
+      // 3. claim_status (init)
+      // 4. mint
+      // 5. vault (mut)
+      // 6. claimant_token_account (init_if_needed)
+      // 7. token_program
+      // 8. associated_token_program
+      // 9. system_program
       const claimIx = new TransactionInstruction({
-        programId: MERKLE_DISTRIBUTOR_PROGRAM_ID,
+        programId: MERKLE_CLAIM_PROGRAM_ID,
         keys: [
-          { pubkey: DISTRIBUTOR_PUBKEY, isSigner: false, isWritable: true },
-          { pubkey: claimStatusPda, isSigner: false, isWritable: true },
-          { pubkey: vault, isSigner: false, isWritable: true },
-          { pubkey: userAta, isSigner: false, isWritable: true },
-          { pubkey: publicKey, isSigner: true, isWritable: true },
-          { pubkey: TOKEN_MINT, isSigner: false, isWritable: false },
-          { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+          { pubkey: publicKey, isSigner: true, isWritable: true }, // claimant
+          { pubkey: DISTRIBUTOR_PUBKEY, isSigner: false, isWritable: true }, // distributor
+          { pubkey: claimStatusPda, isSigner: false, isWritable: true }, // claim_status
+          { pubkey: TOKEN_MINT, isSigner: false, isWritable: false }, // mint
+          { pubkey: vault, isSigner: false, isWritable: true }, // vault
+          { pubkey: userAta, isSigner: false, isWritable: true }, // claimant_token_account
+          { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false }, // token_program
+          { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // associated_token_program
+          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // system_program
         ],
         data,
       });
@@ -212,6 +241,7 @@ export const ClaimButton: FC = () => {
       const simulation = await connection.simulateTransaction(tx);
       if (simulation.value.err) {
         console.error("Simulation error:", simulation.value.err);
+        console.error("Logs:", simulation.value.logs);
         throw new Error(
           `Transaction simulation failed: ${JSON.stringify(simulation.value.err)}`
         );
@@ -251,6 +281,10 @@ export const ClaimButton: FC = () => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
+  };
+
+  const getExplorerUrl = (signature: string) => {
+    return EXPLORER_URL.replace("{signature}", signature);
   };
 
   if (!connected) {
@@ -302,7 +336,7 @@ export const ClaimButton: FC = () => {
         </p>
         {txSignature && (
           <a
-            href={`https://solscan.io/tx/${txSignature}`}
+            href={getExplorerUrl(txSignature)}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -322,7 +356,7 @@ export const ClaimButton: FC = () => {
           You claimed {formatAmount(proofData.amount!)} {TOKEN_SYMBOL} tokens.
         </p>
         <a
-          href={`https://solscan.io/tx/${txSignature}`}
+          href={getExplorerUrl(txSignature)}
           target="_blank"
           rel="noopener noreferrer"
         >
