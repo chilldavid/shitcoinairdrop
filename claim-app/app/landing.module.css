@@ -392,7 +392,115 @@
   margin: 0;
 }
 
-/* ===== Section 3: Bonus Rewards ===== */
+/* ===== Section 3: Meet our Memes ===== */
+.section3Memes {
+  position: relative;
+  z-index: 2;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(232, 168, 32, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 100%, rgba(76, 175, 80, 0.06) 0%, transparent 50%),
+    #0c0c14;
+  border-top: 4px solid #5a3a08;
+  padding: 80px 24px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.memesTitle {
+  font-size: 32px;
+  color: #fcd868;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  text-shadow:
+    0 0 20px rgba(232, 168, 32, 0.4),
+    0 2px 0 #b07818;
+}
+
+.memesSubtitle {
+  font-size: 13px;
+  color: #c0b090;
+  text-align: center;
+  line-height: 2;
+  max-width: 700px;
+  margin: 0 0 56px;
+}
+
+.memesGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.memeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid #3a2204;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.memeCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  border-color: #e8a820;
+}
+
+.memeImgWrap {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid #5a3a08;
+}
+
+.memeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.memePlaceholder {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 28px;
+  color: #5a3a08;
+}
+
+.memeName {
+  font-size: 11px;
+  color: #fcd868;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.memeDesc {
+  font-size: 9px;
+  color: #c0b090;
+  line-height: 2;
+  margin: 0;
+}
+
+.memesBottom {
+  font-size: 13px;
+  color: #e8a820;
+  text-align: center;
+  margin: 56px 0 0;
+  line-height: 2;
+  text-shadow: 0 0 12px rgba(232, 168, 32, 0.3);
+}
+
+/* ===== Section 4: Bonus Rewards ===== */
 .section3 {
   position: relative;
   z-index: 2;
@@ -531,6 +639,43 @@
 
   .stepSub {
     font-size: 9px;
+  }
+
+  .section3Memes {
+    padding: 48px 16px 64px;
+  }
+
+  .memesTitle {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .memesSubtitle {
+    font-size: 10px;
+    margin-bottom: 32px;
+  }
+
+  .memesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .memeImgWrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .memeName {
+    font-size: 9px;
+  }
+
+  .memeDesc {
+    font-size: 8px;
+  }
+
+  .memesBottom {
+    font-size: 10px;
+    margin-top: 32px;
   }
 
   .section3 {

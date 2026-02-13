@@ -164,7 +164,91 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Section 3: Bonus Rewards */}
+      {/* Section 3: Meet our Memes */}
+      <div className={styles.section3Memes}>
+        <h2 className={styles.memesTitle}>Meet our Memes</h2>
+        <p className={styles.memesSubtitle}>
+          The first collection consists of the 10 most impactful memes on Solana
+        </p>
+
+        <div className={styles.memesGrid}>
+          {[
+            {
+              img: "/moodeng1.png",
+              name: "Moo Deng",
+              desc: "The baby hippo that hippo-notized the world with her cuteness. One of the first big viral memecoin successes.",
+            },
+            {
+              img: "/pnut1.png",
+              name: "Peanut",
+              desc: "The poor squirrel that was wrongly euthanised and which played a part in the 2024 U.S. elections, immortalised on the blockchain as one of the most successful memecoins.",
+            },
+            {
+              img: "/chillguy1.png",
+              name: "Chill Guy",
+              desc: "A simple cartoon dog that broke the internet and redefined what virality means. Kicked off an onchain TikTok meta and onboarded more than a 100,000 new users to crypto.",
+            },
+            {
+              img: "/wif1.png",
+              name: "Dog Wif Hat",
+              desc: "One of the most impactful memecoins which fully cemented Solana as the memecoin chain. The hat stays on.",
+            },
+            {
+              img: "/pengu1.png",
+              name: "Pengu",
+              desc: "The ETH NFT collection turned global brand knew that Solana was the place to launch their coin and instantly became a household name in the memecoin space.",
+            },
+            {
+              img: "/popcat1.png",
+              name: "Popcat",
+              desc: "The leading cat meme that finally gave proper representation of cats in a world full of dog-themed cryptocoins. It also pops.",
+            },
+            {
+              img: null,
+              name: "BONK",
+              desc: "Some say it was the coin that saved Solana. In the darkest of times, this dog with his baseball bat was airdropped to every Solana user.",
+            },
+            {
+              img: null,
+              name: "SPX6900",
+              desc: "Not exactly a pure Solana meme, but iconic nonetheless. With Murad at the head and an army of anime waifu pfps, this community aims to flip the stock market some day.",
+            },
+            {
+              img: "/gigachad1.png",
+              name: "Giga Chad",
+              desc: "A bunch of bodybuilding chads made their way to the blockchain and tokenized this iconic meme.",
+            },
+            {
+              img: "/fartcoin1.png",
+              name: "Fart Coin",
+              desc: "The world\u2019s oldest meme that can be understood without saying a word. This ridiculous sounding memecoin made its impact on the world as the silliest investment one can make.",
+            },
+          ].map((meme, i) => (
+            <div key={i} className={styles.memeCard}>
+              <div className={styles.memeImgWrap}>
+                {meme.img ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={meme.img}
+                    alt={meme.name}
+                    className={styles.memeImg}
+                  />
+                ) : (
+                  <span className={styles.memePlaceholder}>?</span>
+                )}
+              </div>
+              <h4 className={styles.memeName}>{meme.name}</h4>
+              <p className={styles.memeDesc}>{meme.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className={styles.memesBottom}>
+          What memes should we add in our next season? Let us know!
+        </p>
+      </div>
+
+      {/* Section 4: Bonus Rewards */}
       <div className={styles.section3}>
         <h2 className={styles.section3Title}>Bonus Rewards</h2>
 
