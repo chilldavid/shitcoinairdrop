@@ -50,7 +50,8 @@ export default function Landing() {
         </h2>
 
         <div className={styles.stepsGrid}>
-          <div className={styles.stepCard}>
+          <div className={`${styles.stepCard} ${styles.stepBronze}`}>
+            <span className={styles.stepBadge}>1</span>
             <div className={styles.stepImageWrap}>
               <div className={styles.placeholderImg}>🥉🥈🥇</div>
             </div>
@@ -64,7 +65,8 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className={styles.stepCard}>
+          <div className={`${styles.stepCard} ${styles.stepGrass}`}>
+            <span className={styles.stepBadge}>2</span>
             <div className={styles.stepImageWrap}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -82,7 +84,8 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className={styles.stepCard}>
+          <div className={`${styles.stepCard} ${styles.stepCatch}`}>
+            <span className={styles.stepBadge}>3</span>
             <div className={styles.stepImageWrap}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -101,7 +104,8 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className={styles.stepCard}>
+          <div className={`${styles.stepCard} ${styles.stepReward}`}>
+            <span className={styles.stepBadge}>4</span>
             <div className={styles.stepImageWrap}>
               <div className={styles.placeholderImg}>💰</div>
             </div>

@@ -194,7 +194,10 @@
 .section2 {
   position: relative;
   z-index: 2;
-  background: #0c0c14;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(232, 168, 32, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(100, 200, 100, 0.06) 0%, transparent 50%),
+    #0c0c14;
   padding: 80px 24px 100px;
   display: flex;
   flex-direction: column;
@@ -203,12 +206,14 @@
 
 .section2Title {
   font-size: 32px;
-  color: #e8a820;
+  color: #fcd868;
   text-align: center;
   line-height: 1.6;
   max-width: 900px;
   margin: 0 0 64px;
-  text-shadow: 0 0 20px rgba(232, 168, 32, 0.3);
+  text-shadow:
+    0 0 20px rgba(232, 168, 32, 0.4),
+    0 2px 0 #b07818;
 }
 
 .stepsGrid {
@@ -220,13 +225,62 @@
 }
 
 .stepCard {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 32px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 2px solid #5a3a08;
-  padding: 28px 32px;
+  gap: 24px;
+  padding: 28px 28px 28px 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 3px solid #5a3a08;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.stepCard:hover {
+  transform: translateY(-4px) rotate(-0.5deg);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Per-card accent colors */
+.stepBronze { border-color: #cd7f32; }
+.stepBronze .stepImageWrap { border-color: #cd7f32; box-shadow: 0 0 16px rgba(205, 127, 50, 0.25); }
+.stepBronze .stepHeading { color: #f0c070; }
+
+.stepGrass { border-color: #4caf50; }
+.stepGrass .stepImageWrap { border-color: #4caf50; box-shadow: 0 0 16px rgba(76, 175, 80, 0.25); }
+.stepGrass .stepHeading { color: #80e080; }
+
+.stepCatch { border-color: #9c27b0; }
+.stepCatch .stepImageWrap { border-color: #9c27b0; box-shadow: 0 0 16px rgba(156, 39, 176, 0.25); }
+.stepCatch .stepHeading { color: #da80f0; }
+
+.stepReward { border-color: #e8a820; }
+.stepReward .stepImageWrap { border-color: #e8a820; box-shadow: 0 0 16px rgba(232, 168, 32, 0.25); }
+.stepReward .stepHeading { color: #fcd868; }
+
+/* Step number badge */
+.stepBadge {
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #fff;
+  background: #e8a820;
+  border: 3px solid #fcd868;
+  box-shadow:
+    0 0 0 3px #5a3a08,
+    0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.stepBronze .stepBadge { background: #cd7f32; border-color: #f0c070; }
+.stepGrass .stepBadge { background: #388e3c; border-color: #80e080; }
+.stepCatch .stepBadge { background: #7b1fa2; border-color: #da80f0; }
+.stepReward .stepBadge { background: #e8a820; border-color: #fcd868; }
 
 .stepImageWrap {
   flex-shrink: 0;
@@ -235,8 +289,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid #3a2204;
+  background: rgba(0, 0, 0, 0.5);
+  border: 3px solid #3a2204;
+  transition: transform 0.2s;
+}
+
+.stepCard:hover .stepImageWrap {
+  transform: scale(1.05);
 }
 
 .stepImg {
@@ -257,7 +316,7 @@
 }
 
 .stepHeading {
-  font-size: 16px;
+  font-size: 15px;
   color: #fcd868;
   margin: 0 0 14px;
   line-height: 1.4;
@@ -265,7 +324,7 @@
 
 .stepSub {
   font-size: 11px;
-  color: #b0a080;
+  color: #c0b090;
   line-height: 2;
   margin: 0;
 }
@@ -317,7 +376,15 @@
     flex-direction: column;
     text-align: center;
     gap: 20px;
-    padding: 20px;
+    padding: 24px 20px;
+  }
+
+  .stepBadge {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+    top: -12px;
+    left: -12px;
   }
 
   .stepImageWrap {
