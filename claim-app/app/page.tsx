@@ -4,8 +4,8 @@ import { useState, useCallback } from "react";
 import styles from "./landing.module.css";
 
 const CONTRACT_ADDRESS = "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump";
-const SHORT_ADDRESS =
-  CONTRACT_ADDRESS.slice(0, 6) + "..." + CONTRACT_ADDRESS.slice(-6);
+const ADDR_FRONT = CONTRACT_ADDRESS.slice(0, 22);
+const ADDR_BACK = CONTRACT_ADDRESS.slice(22);
 
 const MEMES = [
   {
@@ -109,7 +109,10 @@ export default function Landing() {
             <span className={styles.contractCaption}>Get $SAFARI</span>
             <div className={styles.contractBar}>
               <span className={styles.contractLabel}>CA</span>
-              <span className={styles.contractAddress}>{SHORT_ADDRESS}</span>
+              <span className={styles.contractAddress}>
+                <span className={styles.addrFront}>{ADDR_FRONT}</span>
+                <span className={styles.addrBack}>{ADDR_BACK}</span>
+              </span>
               <button
                 className={`${styles.copyBtn} ${copied ? styles.copied : ""}`}
                 onClick={copyAddress}
@@ -253,15 +256,20 @@ export default function Landing() {
           The first collection consists of the 10 most impactful memes on Solana
         </p>
 
-        {/* Interactive map */}
+        {/* Interactive grass field */}
         <div className={styles.mapContainer}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/map_1x.png"
-            alt="Safari map"
-            className={styles.mapImage}
+            src="/grass_screen3.png"
+            alt="Grass field"
+            className={`${styles.mapImage} ${styles.mapDesktop}`}
           />
-          <div className={styles.mapOverlay} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/grass_screen3_mobile.png"
+            alt="Grass field"
+            className={`${styles.mapImage} ${styles.mapMobile}`}
+          />
 
           {MEMES.map((meme, i) => (
             <div

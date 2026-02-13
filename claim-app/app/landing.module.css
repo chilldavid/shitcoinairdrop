@@ -146,11 +146,22 @@
   color: #e8a820;
   padding: 14px 16px;
   flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
   white-space: nowrap;
   user-select: all;
   min-width: 0;
+  overflow: hidden;
+}
+
+.addrFront {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.addrBack {
+  flex-shrink: 0;
 }
 
 .copyBtn {
@@ -443,11 +454,12 @@
   image-rendering: pixelated;
 }
 
-.mapOverlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.15);
-  pointer-events: none;
+.mapDesktop {
+  display: block;
+}
+
+.mapMobile {
+  display: none;
 }
 
 /* Meme characters on map */
@@ -696,6 +708,14 @@
   .memesSubtitle {
     font-size: 10px;
     margin-bottom: 32px;
+  }
+
+  .mapDesktop {
+    display: none;
+  }
+
+  .mapMobile {
+    display: block;
   }
 
   .mapMemeSprite {
