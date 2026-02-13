@@ -1,14 +1,92 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import styles from "./landing.module.css";
 
 const CONTRACT_ADDRESS = "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump";
 const SHORT_ADDRESS =
   CONTRACT_ADDRESS.slice(0, 6) + "..." + CONTRACT_ADDRESS.slice(-6);
 
+const MEMES = [
+  {
+    img: "/moodeng1.png",
+    name: "Moo Deng",
+    desc: "The baby hippo that hippo-notized the world with her cuteness. One of the first big viral memecoin successes.",
+    x: 10,
+    y: 18,
+  },
+  {
+    img: "/pnut1.png",
+    name: "Peanut",
+    desc: "The poor squirrel that was wrongly euthanised and which played a part in the 2024 U.S. elections, immortalised on the blockchain as one of the most successful memecoins.",
+    x: 62,
+    y: 8,
+  },
+  {
+    img: "/chillguy1.png",
+    name: "Chill Guy",
+    desc: "A simple cartoon dog that broke the internet and redefined what virality means. Kicked off an onchain TikTok meta and onboarded more than a 100,000 new users to crypto.",
+    x: 50,
+    y: 82,
+  },
+  {
+    img: "/wif1.png",
+    name: "Dog Wif Hat",
+    desc: "One of the most impactful memecoins which fully cemented Solana as the memecoin chain. The hat stays on.",
+    x: 33,
+    y: 42,
+  },
+  {
+    img: "/pengu1.png",
+    name: "Pengu",
+    desc: "The ETH NFT collection turned global brand knew that Solana was the place to launch their coin and instantly became a household name in the memecoin space.",
+    x: 82,
+    y: 62,
+  },
+  {
+    img: "/popcat1.png",
+    name: "Popcat",
+    desc: "The leading cat meme that finally gave proper representation of cats in a world full of dog-themed cryptocoins. It also pops.",
+    x: 40,
+    y: 60,
+  },
+  {
+    img: "/bonk1.png",
+    name: "BONK",
+    desc: "Some say it was the coin that saved Solana. In the darkest of times, this dog with his baseball bat was airdropped to every Solana user.",
+    x: 75,
+    y: 22,
+  },
+  {
+    img: "/spx69001.png",
+    name: "SPX6900",
+    desc: "Not exactly a pure Solana meme, but iconic nonetheless. With Murad at the head and an army of anime waifu pfps, this community aims to flip the stock market some day.",
+    x: 18,
+    y: 52,
+  },
+  {
+    img: "/gigachad1.png",
+    name: "Giga Chad",
+    desc: "A bunch of bodybuilding chads made their way to the blockchain and tokenized this iconic meme.",
+    x: 55,
+    y: 32,
+  },
+  {
+    img: "/fartcoin1.png",
+    name: "Fart Coin",
+    desc: "The world\u2019s oldest meme that can be understood without saying a word. This ridiculous sounding memecoin made its impact on the world as the silliest investment one can make.",
+    x: 12,
+    y: 78,
+  },
+];
+
 export default function Landing() {
   const [copied, setCopied] = useState(false);
+  const [activeMeme, setActiveMeme] = useState<number | null>(null);
+
+  const toggleMeme = useCallback((index: number) => {
+    setActiveMeme((prev) => (prev === index ? null : index));
+  }, []);
 
   function copyAddress() {
     navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => {
@@ -55,6 +133,8 @@ export default function Landing() {
             "pengu1.png",
             "moodeng1.png",
             "pnut1.png",
+            "bonk1.png",
+            "spx69001.png",
             "chillguy1.png",
             "fartcoin1.png",
             "gigachad1.png",
@@ -63,6 +143,8 @@ export default function Landing() {
             "pengu1.png",
             "moodeng1.png",
             "pnut1.png",
+            "bonk1.png",
+            "spx69001.png",
           ].map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -171,74 +253,35 @@ export default function Landing() {
           The first collection consists of the 10 most impactful memes on Solana
         </p>
 
-        <div className={styles.memesGrid}>
-          {[
-            {
-              img: "/moodeng1.png",
-              name: "Moo Deng",
-              desc: "The baby hippo that hippo-notized the world with her cuteness. One of the first big viral memecoin successes.",
-            },
-            {
-              img: "/pnut1.png",
-              name: "Peanut",
-              desc: "The poor squirrel that was wrongly euthanised and which played a part in the 2024 U.S. elections, immortalised on the blockchain as one of the most successful memecoins.",
-            },
-            {
-              img: "/chillguy1.png",
-              name: "Chill Guy",
-              desc: "A simple cartoon dog that broke the internet and redefined what virality means. Kicked off an onchain TikTok meta and onboarded more than a 100,000 new users to crypto.",
-            },
-            {
-              img: "/wif1.png",
-              name: "Dog Wif Hat",
-              desc: "One of the most impactful memecoins which fully cemented Solana as the memecoin chain. The hat stays on.",
-            },
-            {
-              img: "/pengu1.png",
-              name: "Pengu",
-              desc: "The ETH NFT collection turned global brand knew that Solana was the place to launch their coin and instantly became a household name in the memecoin space.",
-            },
-            {
-              img: "/popcat1.png",
-              name: "Popcat",
-              desc: "The leading cat meme that finally gave proper representation of cats in a world full of dog-themed cryptocoins. It also pops.",
-            },
-            {
-              img: null,
-              name: "BONK",
-              desc: "Some say it was the coin that saved Solana. In the darkest of times, this dog with his baseball bat was airdropped to every Solana user.",
-            },
-            {
-              img: null,
-              name: "SPX6900",
-              desc: "Not exactly a pure Solana meme, but iconic nonetheless. With Murad at the head and an army of anime waifu pfps, this community aims to flip the stock market some day.",
-            },
-            {
-              img: "/gigachad1.png",
-              name: "Giga Chad",
-              desc: "A bunch of bodybuilding chads made their way to the blockchain and tokenized this iconic meme.",
-            },
-            {
-              img: "/fartcoin1.png",
-              name: "Fart Coin",
-              desc: "The world\u2019s oldest meme that can be understood without saying a word. This ridiculous sounding memecoin made its impact on the world as the silliest investment one can make.",
-            },
-          ].map((meme, i) => (
-            <div key={i} className={styles.memeCard}>
-              <div className={styles.memeImgWrap}>
-                {meme.img ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={meme.img}
-                    alt={meme.name}
-                    className={styles.memeImg}
-                  />
-                ) : (
-                  <span className={styles.memePlaceholder}>?</span>
-                )}
+        {/* Interactive map */}
+        <div className={styles.mapContainer}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/map_1x.png"
+            alt="Safari map"
+            className={styles.mapImage}
+          />
+          <div className={styles.mapOverlay} />
+
+          {MEMES.map((meme, i) => (
+            <div
+              key={i}
+              className={`${styles.mapMeme} ${activeMeme === i ? styles.mapMemeActive : ""}`}
+              style={{ left: `${meme.x}%`, top: `${meme.y}%` }}
+              onClick={() => toggleMeme(i)}
+              onMouseEnter={() => setActiveMeme(i)}
+              onMouseLeave={() => setActiveMeme(null)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={meme.img}
+                alt={meme.name}
+                className={styles.mapMemeSprite}
+              />
+              <div className={`${styles.mapTooltip} ${meme.x > 60 ? styles.tooltipLeft : ""}`}>
+                <h4 className={styles.tooltipName}>{meme.name}</h4>
+                <p className={styles.tooltipDesc}>{meme.desc}</p>
               </div>
-              <h4 className={styles.memeName}>{meme.name}</h4>
-              <p className={styles.memeDesc}>{meme.desc}</p>
             </div>
           ))}
         </div>
@@ -254,6 +297,14 @@ export default function Landing() {
 
         <div className={styles.bonusGrid}>
           <div className={`${styles.bonusCard} ${styles.bonusLeft}`}>
+            <div className={styles.bonusScreenshotWrap}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/collection_screenshot.png"
+                alt="Collection screenshot"
+                className={styles.bonusScreenshot}
+              />
+            </div>
             <h3 className={styles.bonusHeading}>Catch them all</h3>
             <p className={styles.bonusSub}>
               Every time you catch all 10 memes, you can hand in your collection
@@ -265,6 +316,14 @@ export default function Landing() {
           </div>
 
           <div className={`${styles.bonusCard} ${styles.bonusRight}`}>
+            <div className={styles.bonusScreenshotWrap}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/frenzy_screenshot.png"
+                alt="Frenzy mode screenshot"
+                className={styles.bonusScreenshot}
+              />
+            </div>
             <h3 className={styles.bonusHeading}>Frenzy Mode</h3>
             <p className={styles.bonusSub}>
               Every game you start has a chance to spawn a Frenzy Shard. If you

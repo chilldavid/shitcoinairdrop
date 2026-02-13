@@ -396,10 +396,7 @@
 .section3Memes {
   position: relative;
   z-index: 2;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(232, 168, 32, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 20% 100%, rgba(76, 175, 80, 0.06) 0%, transparent 50%),
-    #0c0c14;
+  background: #0c0c14;
   border-top: 4px solid #5a3a08;
   padding: 80px 24px 100px;
   display: flex;
@@ -427,64 +424,95 @@
   margin: 0 0 56px;
 }
 
-.memesGrid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 24px;
-  max-width: 1100px;
+/* Interactive map */
+.mapContainer {
+  position: relative;
+  max-width: 900px;
   width: 100%;
+  border: 4px solid #5a3a08;
+  box-shadow:
+    0 0 0 4px #3a2204,
+    0 8px 40px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
 }
 
-.memeCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 20px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 2px solid #3a2204;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-}
-
-.memeCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  border-color: #e8a820;
-}
-
-.memeImgWrap {
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid #5a3a08;
-}
-
-.memeImg {
+.mapImage {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.mapOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* Meme characters on map */
+.mapMeme {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.mapMemeSprite {
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   image-rendering: pixelated;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+  animation: spriteBounce 0.6s ease-in-out infinite alternate;
+  transition: transform 0.15s;
 }
 
-.memePlaceholder {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 28px;
-  color: #5a3a08;
+.mapMeme:hover .mapMemeSprite,
+.mapMemeActive .mapMemeSprite {
+  transform: scale(1.3);
+  filter:
+    drop-shadow(0 0 8px rgba(252, 216, 104, 0.8))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
 }
 
-.memeName {
-  font-size: 11px;
+/* Tooltip */
+.mapTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  padding: 16px;
+  background: rgba(12, 12, 20, 0.95);
+  border: 3px solid #e8a820;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-bottom: 8px;
+}
+
+.mapMeme:hover .mapTooltip,
+.mapMemeActive .mapTooltip {
+  opacity: 1;
+}
+
+/* Flip tooltip for right-side memes */
+.tooltipLeft {
+  left: auto;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+.tooltipName {
+  font-size: 12px;
   color: #fcd868;
   margin: 0 0 10px;
   line-height: 1.4;
 }
 
-.memeDesc {
+.tooltipDesc {
   font-size: 9px;
   color: #c0b090;
   line-height: 2;
@@ -568,6 +596,21 @@
 
 .bonusSub:last-child {
   margin-bottom: 0;
+}
+
+.bonusScreenshotWrap {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 2px solid #3a2204;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.bonusScreenshot {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
 }
 
 /* Responsive */
@@ -655,21 +698,21 @@
     margin-bottom: 32px;
   }
 
-  .memesGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+  .mapMemeSprite {
+    width: 28px;
+    height: 28px;
   }
 
-  .memeImgWrap {
-    width: 64px;
-    height: 64px;
+  .mapTooltip {
+    width: 180px;
+    padding: 12px;
   }
 
-  .memeName {
-    font-size: 9px;
+  .tooltipName {
+    font-size: 10px;
   }
 
-  .memeDesc {
+  .tooltipDesc {
     font-size: 8px;
   }
 
