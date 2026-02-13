@@ -21,6 +21,9 @@ export default function Landing() {
       <div className={styles.overlay} />
 
       <div className={styles.content}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo_text.png" alt="Shitcoin Safari" className={styles.logo} />
+
         <button className={styles.playBtn}>Play Now</button>
 
         <div className={styles.contractBar}>
