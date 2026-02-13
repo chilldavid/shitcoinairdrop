@@ -36,14 +36,14 @@
   align-items: center;
   justify-content: flex-end;
   height: 100vh;
-  padding-bottom: 8vh;
+  padding-bottom: 18vh;
   gap: 28px;
 }
 
 /* Centered logo */
 .logo {
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   max-width: 500px;
