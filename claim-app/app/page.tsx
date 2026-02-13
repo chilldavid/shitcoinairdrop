@@ -4,6 +4,8 @@ import { useState } from "react";
 import styles from "./landing.module.css";
 
 const CONTRACT_ADDRESS = "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump";
+const SHORT_ADDRESS =
+  CONTRACT_ADDRESS.slice(0, 6) + "..." + CONTRACT_ADDRESS.slice(-6);
 
 export default function Landing() {
   const [copied, setCopied] = useState(false);
@@ -29,13 +31,86 @@ export default function Landing() {
             <span className={styles.contractCaption}>Get $SAFARI</span>
             <div className={styles.contractBar}>
               <span className={styles.contractLabel}>CA</span>
-              <span className={styles.contractAddress}>{CONTRACT_ADDRESS}</span>
+              <span className={styles.contractAddress}>{SHORT_ADDRESS}</span>
               <button
                 className={`${styles.copyBtn} ${copied ? styles.copied : ""}`}
                 onClick={copyAddress}
               >
                 {copied ? "COPIED!" : "COPY"}
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2: How it works */}
+      <div className={styles.section2}>
+        <h2 className={styles.section2Title}>
+          A new way to engage with your favorite memecoins!
+        </h2>
+
+        <div className={styles.stepsGrid}>
+          <div className={styles.stepCard}>
+            <div className={styles.stepImageWrap}>
+              <div className={styles.placeholderImg}>🥉🥈🥇</div>
+            </div>
+            <div className={styles.stepText}>
+              <h3 className={styles.stepHeading}>Choose SOL entry 🥉🥈🥇</h3>
+              <p className={styles.stepSub}>
+                There are three buy-in tiers: bronze (0.05 SOL), silver (0.5
+                SOL), and gold (5 SOL). The higher the buy-in, the bigger the
+                rewards.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.stepCard}>
+            <div className={styles.stepImageWrap}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/walking_grass.png"
+                alt="Walking in tall grass"
+                className={styles.stepImg}
+              />
+            </div>
+            <div className={styles.stepText}>
+              <h3 className={styles.stepHeading}>Search for Memes 🌿</h3>
+              <p className={styles.stepSub}>
+                Memes are hiding in the tall grass. You have 100 steps to walk
+                through the tall grass and find them.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.stepCard}>
+            <div className={styles.stepImageWrap}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/catch.png"
+                alt="Catching a meme"
+                className={styles.stepImg}
+              />
+            </div>
+            <div className={styles.stepText}>
+              <h3 className={styles.stepHeading}>Catch them all! 🕸️</h3>
+              <p className={styles.stepSub}>
+                Once you encountered a meme, you want to try to catch it. You
+                can shoot nets directly, or you can use bait or taunt to help
+                you catch the meme.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.stepCard}>
+            <div className={styles.stepImageWrap}>
+              <div className={styles.placeholderImg}>💰</div>
+            </div>
+            <div className={styles.stepText}>
+              <h3 className={styles.stepHeading}>Get rewarded 💰</h3>
+              <p className={styles.stepSub}>
+                The meme coins of all the memes you caught are sent directly to
+                your wallet. The more you caught, the bigger your reward is.
+              </p>
             </div>
           </div>
         </div>

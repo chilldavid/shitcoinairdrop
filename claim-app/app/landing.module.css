@@ -1,8 +1,8 @@
 .page {
   position: relative;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
   font-family: 'Press Start 2P', monospace;
   image-rendering: pixelated;
 }
@@ -190,6 +190,86 @@
   );
 }
 
+/* ===== Section 2: How it works ===== */
+.section2 {
+  position: relative;
+  z-index: 2;
+  background: #0c0c14;
+  padding: 80px 24px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section2Title {
+  font-size: 22px;
+  color: #e8a820;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 0 64px;
+  text-shadow: 0 0 20px rgba(232, 168, 32, 0.3);
+}
+
+.stepsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.stepCard {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid #5a3a08;
+  padding: 28px 32px;
+}
+
+.stepImageWrap {
+  flex-shrink: 0;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid #3a2204;
+}
+
+.stepImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.placeholderImg {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.stepText {
+  flex: 1;
+  min-width: 0;
+}
+
+.stepHeading {
+  font-size: 16px;
+  color: #fcd868;
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+
+.stepSub {
+  font-size: 11px;
+  color: #b0a080;
+  line-height: 2;
+  margin: 0;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .playBtn {
@@ -218,5 +298,34 @@
   .copyBtn {
     font-size: 8px;
     padding: 10px 12px;
+  }
+
+  .section2 {
+    padding: 48px 16px 64px;
+  }
+
+  .section2Title {
+    font-size: 14px;
+    margin-bottom: 40px;
+  }
+
+  .stepCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .stepImageWrap {
+    width: 120px;
+    height: 120px;
+  }
+
+  .stepHeading {
+    font-size: 12px;
+  }
+
+  .stepSub {
+    font-size: 9px;
   }
 }
