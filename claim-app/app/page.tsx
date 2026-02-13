@@ -21,20 +21,24 @@ export default function Landing() {
       <div className={styles.overlay} />
 
       <div className={styles.content}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo_text.png" alt="Shitcoin Safari" className={styles.logo} />
+        <div className={styles.heroGroup}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo_text.png" alt="Shitcoin Safari" className={styles.logo} />
+          <button className={styles.playBtn}>Play Now</button>
+        </div>
 
-        <button className={styles.playBtn}>Play Now</button>
-
-        <div className={styles.contractBar}>
-          <span className={styles.contractLabel}>CA</span>
-          <span className={styles.contractAddress}>{CONTRACT_ADDRESS}</span>
-          <button
-            className={`${styles.copyBtn} ${copied ? styles.copied : ""}`}
-            onClick={copyAddress}
-          >
-            {copied ? "COPIED!" : "COPY"}
-          </button>
+        <div className={styles.contractSection}>
+          <span className={styles.contractCaption}>Get $SAFARI</span>
+          <div className={styles.contractBar}>
+            <span className={styles.contractLabel}>CA</span>
+            <span className={styles.contractAddress}>{CONTRACT_ADDRESS}</span>
+            <button
+              className={`${styles.copyBtn} ${copied ? styles.copied : ""}`}
+              onClick={copyAddress}
+            >
+              {copied ? "COPIED!" : "COPY"}
+            </button>
+          </div>
         </div>
       </div>
 

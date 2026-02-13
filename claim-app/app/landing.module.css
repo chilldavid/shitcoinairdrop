@@ -36,21 +36,44 @@
   align-items: center;
   justify-content: flex-end;
   height: 100vh;
-  padding-bottom: 18vh;
+  padding-bottom: 6vh;
   gap: 28px;
 }
 
-/* Centered logo */
-.logo {
+/* Logo + Play button group */
+.heroGroup {
   position: absolute;
-  top: 35%;
+  top: 28%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo {
   max-width: 500px;
-  width: 80%;
+  width: 80vw;
   height: auto;
   image-rendering: pixelated;
   filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
+}
+
+/* Contract section at bottom */
+.contractSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.contractCaption {
+  font-size: 14px;
+  color: #e8a820;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  letter-spacing: 2px;
 }
 
 /* Play Now Button */
@@ -176,6 +199,10 @@
 
   .logo {
     max-width: 320px;
+  }
+
+  .contractCaption {
+    font-size: 10px;
   }
 
   .contractLabel {
