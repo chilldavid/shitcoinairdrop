@@ -392,6 +392,76 @@
   margin: 0;
 }
 
+/* ===== Section 3: Bonus Rewards ===== */
+.section3 {
+  position: relative;
+  z-index: 2;
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(232, 168, 32, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 100%, rgba(156, 39, 176, 0.06) 0%, transparent 50%),
+    #0c0c14;
+  border-top: 4px solid #5a3a08;
+  padding: 80px 24px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section3Title {
+  font-size: 32px;
+  color: #fcd868;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 56px;
+  text-shadow:
+    0 0 20px rgba(232, 168, 32, 0.4),
+    0 2px 0 #b07818;
+}
+
+.bonusGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.bonusCard {
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 3px solid #5a3a08;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bonusCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.bonusLeft { border-color: #e8a820; }
+.bonusLeft .bonusHeading { color: #fcd868; }
+
+.bonusRight { border-color: #9c27b0; }
+.bonusRight .bonusHeading { color: #da80f0; }
+
+.bonusHeading {
+  font-size: 18px;
+  color: #fcd868;
+  margin: 0 0 20px;
+  line-height: 1.4;
+}
+
+.bonusSub {
+  font-size: 11px;
+  color: #c0b090;
+  line-height: 2;
+  margin: 0 0 14px;
+}
+
+.bonusSub:last-child {
+  margin-bottom: 0;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .playBtn {
@@ -460,6 +530,27 @@
   }
 
   .stepSub {
+    font-size: 9px;
+  }
+
+  .section3 {
+    padding: 48px 16px 64px;
+  }
+
+  .section3Title {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+
+  .bonusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bonusHeading {
+    font-size: 14px;
+  }
+
+  .bonusSub {
     font-size: 9px;
   }
 }

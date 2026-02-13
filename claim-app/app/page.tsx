@@ -164,6 +164,32 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* Section 3: Bonus Rewards */}
+      <div className={styles.section3}>
+        <h2 className={styles.section3Title}>Bonus Rewards</h2>
+
+        <div className={styles.bonusGrid}>
+          <div className={`${styles.bonusCard} ${styles.bonusLeft}`}>
+            <h3 className={styles.bonusHeading}>Catch them all</h3>
+            <p className={styles.bonusSub}>
+              Every time you catch all 10 memes, you can hand in your collection
+              for a $SAFARI prize. You can repeat this again and again.
+            </p>
+            <p className={styles.bonusSub}>
+              The collection rewards are higher in the higher buy-in tiers.
+            </p>
+          </div>
+
+          <div className={`${styles.bonusCard} ${styles.bonusRight}`}>
+            <h3 className={styles.bonusHeading}>Frenzy Mode</h3>
+            <p className={styles.bonusSub}>
+              Every game you start has a chance to spawn a Frenzy Shard. If you
+              see it, walk over it to collect it. Mind your step count though!
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.scanlines} />
     </div>
   );
