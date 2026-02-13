@@ -126,9 +126,9 @@ export default function Landing() {
             <div className={styles.stepImageWrap}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/net1.png"
+                src="/catch.png"
                 alt="Catching a meme"
-                className={`${styles.stepImg} ${styles.stepImgContain}`}
+                className={styles.stepImg}
               />
             </div>
             <div className={styles.stepText}>
