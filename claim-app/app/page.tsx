@@ -186,6 +186,11 @@ export default function Landing() {
               Every game you start has a chance to spawn a Frenzy Shard. If you
               see it, walk over it to collect it. Mind your step count though!
             </p>
+            <p className={styles.bonusSub}>
+              Collect three Frenzy shards within the day and you&apos;ll get
+              access to the Frenzy zone where you can catch as many memes as
+              you can in one minute.
+            </p>
           </div>
         </div>
       </div>
