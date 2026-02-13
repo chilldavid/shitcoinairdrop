@@ -43,6 +43,38 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* Meme character parade */}
+      <div className={styles.paradeWrap}>
+        <div className={styles.paradeTrack}>
+          {[
+            "chillguy1.png",
+            "fartcoin1.png",
+            "gigachad1.png",
+            "popcat1.png",
+            "wif1.png",
+            "pengu1.png",
+            "moodeng1.png",
+            "pnut1.png",
+            "chillguy1.png",
+            "fartcoin1.png",
+            "gigachad1.png",
+            "popcat1.png",
+            "wif1.png",
+            "pengu1.png",
+            "moodeng1.png",
+            "pnut1.png",
+          ].map((src, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={i}
+              src={`/${src}`}
+              alt=""
+              className={styles.paradeSprite}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Section 2: How it works */}
       <div className={styles.section2}>
         <h2 className={styles.section2Title}>
@@ -53,7 +85,12 @@ export default function Landing() {
           <div className={`${styles.stepCard} ${styles.stepBronze}`}>
             <span className={styles.stepBadge}>1</span>
             <div className={styles.stepImageWrap}>
-              <div className={styles.placeholderImg}>🥉🥈🥇</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/mainmenu.png"
+                alt="Game menu"
+                className={styles.stepImg}
+              />
             </div>
             <div className={styles.stepText}>
               <h3 className={styles.stepHeading}>Choose SOL entry 🥉🥈🥇</h3>
@@ -89,9 +126,9 @@ export default function Landing() {
             <div className={styles.stepImageWrap}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/catch.png"
+                src="/net1.png"
                 alt="Catching a meme"
-                className={styles.stepImg}
+                className={`${styles.stepImg} ${styles.stepImgContain}`}
               />
             </div>
             <div className={styles.stepText}>
@@ -107,7 +144,14 @@ export default function Landing() {
           <div className={`${styles.stepCard} ${styles.stepReward}`}>
             <span className={styles.stepBadge}>4</span>
             <div className={styles.stepImageWrap}>
-              <div className={styles.placeholderImg}>💰</div>
+              <div className={styles.rewardSprites}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/popcat1.png" alt="" className={styles.spriteIcon} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/wif1.png" alt="" className={styles.spriteIcon} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/pengu1.png" alt="" className={styles.spriteIcon} />
+              </div>
             </div>
             <div className={styles.stepText}>
               <h3 className={styles.stepHeading}>Get rewarded 💰</h3>

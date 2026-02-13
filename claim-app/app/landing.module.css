@@ -190,6 +190,48 @@
   );
 }
 
+/* ===== Meme character parade ===== */
+.paradeWrap {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  background: #0c0c14;
+  border-top: 4px solid #5a3a08;
+  border-bottom: 4px solid #5a3a08;
+  padding: 20px 0;
+}
+
+.paradeTrack {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  width: max-content;
+  animation: paradeScroll 20s linear infinite;
+}
+
+.paradeSprite {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+  animation: spriteBounce 0.6s ease-in-out infinite alternate;
+}
+
+.paradeSprite:nth-child(2n) {
+  animation-delay: 0.3s;
+}
+
+@keyframes paradeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes spriteBounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
 /* ===== Section 2: How it works ===== */
 .section2 {
   position: relative;
@@ -303,6 +345,27 @@
   height: 100%;
   object-fit: cover;
   image-rendering: pixelated;
+}
+
+.stepImgContain {
+  object-fit: contain;
+  padding: 12px;
+}
+
+.rewardSprites {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.spriteIcon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
 .placeholderImg {
