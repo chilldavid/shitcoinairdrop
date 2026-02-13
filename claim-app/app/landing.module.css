@@ -1,0 +1,178 @@
+.page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  background-image: url('/banner_logo.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.3) 40%,
+    rgba(0, 0, 0, 0.65) 75%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100vh;
+  padding-bottom: 8vh;
+  gap: 28px;
+}
+
+/* Play Now Button */
+.playBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 28px;
+  color: #fff;
+  background: #e8a820;
+  border: none;
+  padding: 18px 54px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+  transition: transform 0.1s;
+  box-shadow:
+    inset -4px -4px 0 #b07818,
+    inset 4px 4px 0 #fcd868,
+    0 0 0 4px #5a3a08,
+    0 6px 0 4px #3a2204,
+    0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.playBtn:hover {
+  transform: translateY(-2px);
+  background: #fcd868;
+  box-shadow:
+    inset -4px -4px 0 #e8a820,
+    inset 4px 4px 0 #fff8b0,
+    0 0 0 4px #5a3a08,
+    0 8px 0 4px #3a2204,
+    0 10px 30px rgba(232, 168, 32, 0.4);
+}
+
+.playBtn:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset -4px -4px 0 #b07818,
+    inset 4px 4px 0 #fcd868,
+    0 0 0 4px #5a3a08,
+    0 2px 0 4px #3a2204,
+    0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Contract Address Bar */
+.contractBar {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  border: 3px solid #5a3a08;
+  box-shadow:
+    inset 0 0 0 2px #3a2204,
+    0 4px 15px rgba(0, 0, 0, 0.5);
+  padding: 0;
+  max-width: 600px;
+  width: 90%;
+}
+
+.contractLabel {
+  font-size: 8px;
+  color: #b07818;
+  padding: 12px 14px;
+  white-space: nowrap;
+  border-right: 2px solid #3a2204;
+  background: rgba(90, 58, 8, 0.3);
+}
+
+.contractAddress {
+  font-size: 9px;
+  color: #e8a820;
+  padding: 12px 14px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: all;
+  min-width: 0;
+}
+
+.copyBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #fff;
+  background: #5a3a08;
+  border: none;
+  border-left: 2px solid #3a2204;
+  padding: 12px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.copyBtn:hover {
+  background: #b07818;
+}
+
+.copyBtn.copied {
+  background: #2a7a2a;
+  color: #aaffaa;
+}
+
+/* Scanline overlay for retro CRT feel */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.06) 2px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .playBtn {
+    font-size: 20px;
+    padding: 14px 36px;
+  }
+
+  .contractLabel {
+    font-size: 6px;
+    padding: 10px 8px;
+  }
+
+  .contractAddress {
+    font-size: 7px;
+    padding: 10px 8px;
+  }
+
+  .copyBtn {
+    font-size: 6px;
+    padding: 10px 10px;
+  }
+}
