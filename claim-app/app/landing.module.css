@@ -444,7 +444,7 @@
   box-shadow:
     0 0 0 4px #3a2204,
     0 8px 40px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .mapImage {
@@ -471,8 +471,8 @@
 }
 
 .mapMemeSprite {
-  width: 48px;
-  height: 48px;
+  width: min(10vw, 100px);
+  height: auto;
   object-fit: contain;
   image-rendering: pixelated;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
@@ -515,6 +515,14 @@
   left: auto;
   right: 50%;
   transform: translateX(50%);
+}
+
+/* Show tooltip below for top-row memes */
+.tooltipBelow {
+  bottom: auto;
+  top: 100%;
+  margin-bottom: 0;
+  margin-top: 8px;
 }
 
 .tooltipName {
@@ -719,8 +727,8 @@
   }
 
   .mapMemeSprite {
-    width: 28px;
-    height: 28px;
+    width: 48px;
+    height: auto;
   }
 
   .mapTooltip {

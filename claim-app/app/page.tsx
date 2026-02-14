@@ -8,75 +8,77 @@ const ADDR_FRONT = CONTRACT_ADDRESS.slice(0, 22);
 const ADDR_BACK = CONTRACT_ADDRESS.slice(22);
 
 const MEMES = [
+  // Row 1
   {
     img: "/moodeng1.png",
     name: "Moo Deng",
     desc: "The baby hippo that hippo-notized the world with her cuteness. One of the first big viral memecoin successes.",
     x: 10,
-    y: 18,
+    y: 28,
   },
   {
     img: "/pnut1.png",
     name: "Peanut",
     desc: "The poor squirrel that was wrongly euthanised and which played a part in the 2024 U.S. elections, immortalised on the blockchain as one of the most successful memecoins.",
-    x: 62,
-    y: 8,
+    x: 30,
+    y: 24,
   },
   {
     img: "/chillguy1.png",
     name: "Chill Guy",
     desc: "A simple cartoon dog that broke the internet and redefined what virality means. Kicked off an onchain TikTok meta and onboarded more than a 100,000 new users to crypto.",
     x: 50,
-    y: 82,
+    y: 28,
   },
   {
     img: "/wif1.png",
     name: "Dog Wif Hat",
     desc: "One of the most impactful memecoins which fully cemented Solana as the memecoin chain. The hat stays on.",
-    x: 33,
-    y: 42,
+    x: 70,
+    y: 24,
   },
   {
     img: "/pengu1.png",
     name: "Pengu",
     desc: "The ETH NFT collection turned global brand knew that Solana was the place to launch their coin and instantly became a household name in the memecoin space.",
-    x: 82,
-    y: 62,
+    x: 90,
+    y: 28,
   },
+  // Row 2
   {
     img: "/popcat1.png",
     name: "Popcat",
     desc: "The leading cat meme that finally gave proper representation of cats in a world full of dog-themed cryptocoins. It also pops.",
-    x: 40,
-    y: 60,
+    x: 10,
+    y: 72,
   },
   {
     img: "/bonk1.png",
     name: "BONK",
     desc: "Some say it was the coin that saved Solana. In the darkest of times, this dog with his baseball bat was airdropped to every Solana user.",
-    x: 75,
-    y: 22,
+    x: 30,
+    y: 76,
   },
   {
     img: "/spx69001.png",
     name: "SPX6900",
     desc: "Not exactly a pure Solana meme, but iconic nonetheless. With Murad at the head and an army of anime waifu pfps, this community aims to flip the stock market some day.",
-    x: 18,
-    y: 52,
+    x: 50,
+    y: 72,
   },
   {
     img: "/gigachad1.png",
     name: "Giga Chad",
     desc: "A bunch of bodybuilding chads made their way to the blockchain and tokenized this iconic meme.",
-    x: 55,
-    y: 32,
+    x: 70,
+    y: 76,
   },
   {
     img: "/fartcoin1.png",
     name: "Fart Coin",
     desc: "The world\u2019s oldest meme that can be understood without saying a word. This ridiculous sounding memecoin made its impact on the world as the silliest investment one can make.",
-    x: 12,
-    y: 78,
+    x: 90,
+    y: 72,
   },
 ];
 
@@ -172,9 +174,9 @@ export default function Landing() {
             <div className={styles.stepImageWrap}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/mainmenu.png"
-                alt="Game menu"
-                className={styles.stepImg}
+                src="/solcoin.png"
+                alt="SOL coin entry"
+                className={`${styles.stepImg} ${styles.stepImgContain}`}
               />
             </div>
             <div className={styles.stepText}>
@@ -229,14 +231,12 @@ export default function Landing() {
           <div className={`${styles.stepCard} ${styles.stepReward}`}>
             <span className={styles.stepBadge}>4</span>
             <div className={styles.stepImageWrap}>
-              <div className={styles.rewardSprites}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/popcat1.png" alt="" className={styles.spriteIcon} />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/wif1.png" alt="" className={styles.spriteIcon} />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/pengu1.png" alt="" className={styles.spriteIcon} />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/coinshower.png"
+                alt="Coin shower rewards"
+                className={`${styles.stepImg} ${styles.stepImgContain}`}
+              />
             </div>
             <div className={styles.stepText}>
               <h3 className={styles.stepHeading}>Get rewarded 💰</h3>
@@ -286,7 +286,7 @@ export default function Landing() {
                 alt={meme.name}
                 className={styles.mapMemeSprite}
               />
-              <div className={`${styles.mapTooltip} ${meme.x > 60 ? styles.tooltipLeft : ""}`}>
+              <div className={`${styles.mapTooltip} ${meme.x > 60 ? styles.tooltipLeft : ""} ${meme.y < 35 ? styles.tooltipBelow : ""}`}>
                 <h4 className={styles.tooltipName}>{meme.name}</h4>
                 <p className={styles.tooltipDesc}>{meme.desc}</p>
               </div>
