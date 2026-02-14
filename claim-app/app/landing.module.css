@@ -28,6 +28,37 @@
   );
 }
 
+/* Social buttons */
+.socials {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 4;
+  display: flex;
+  gap: 12px;
+}
+
+.socialBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #5a3a08;
+  color: #e8a820;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  text-decoration: none;
+}
+
+.socialBtn:hover {
+  background: rgba(232, 168, 32, 0.2);
+  border-color: #e8a820;
+  transform: scale(1.1);
+  color: #fcd868;
+}
+
 .content {
   position: relative;
   z-index: 2;
@@ -635,6 +666,22 @@
 
 /* Responsive */
 @media (max-width: 600px) {
+  .socials {
+    top: 12px;
+    right: 12px;
+    gap: 8px;
+  }
+
+  .socialBtn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .socialBtn svg {
+    width: 14px;
+    height: 14px;
+  }
+
   .playBtn {
     font-size: 20px;
     padding: 14px 36px;
