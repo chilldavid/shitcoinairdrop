@@ -394,6 +394,11 @@
   padding: 12px;
 }
 
+.stepImgCoinshower {
+  object-fit: contain;
+  transform: scale(1.35) translateY(8%);
+}
+
 .rewardSprites {
   display: flex;
   align-items: center;

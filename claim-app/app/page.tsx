@@ -134,7 +134,10 @@ export default function Landing() {
           aria-label="PumpFun"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-            <path d="M12.7 2.4c-.2-.5-.9-.5-1.1 0L8.9 9.1c-.1.3-.4.5-.7.5H1.5c-.5 0-.7.7-.3 1l5.5 4c.3.2.4.6.2.9l-2.1 6.5c-.2.5.4.9.8.6l5.5-4c.3-.2.6-.2.9 0l5.5 4c.4.3 1-.1.8-.6l-2.1-6.5c-.1-.3 0-.7.2-.9l5.5-4c.4-.3.2-1-.3-1h-6.7c-.3 0-.6-.2-.7-.5L12.7 2.4z" />
+            <g transform="rotate(-45 12 12)">
+              <path d="M8 11.5V6a4 4 0 0 1 8 0v5.5H8z" />
+              <path d="M16 12.5V18a4 4 0 0 1-8 0V12.5h8z" />
+            </g>
           </svg>
         </a>
       </div>
@@ -272,7 +275,7 @@ export default function Landing() {
               <img
                 src="/coinshower.png"
                 alt="Coin shower rewards"
-                className={`${styles.stepImg} ${styles.stepImgContain}`}
+                className={`${styles.stepImg} ${styles.stepImgCoinshower}`}
               />
             </div>
             <div className={styles.stepText}>
@@ -421,7 +424,10 @@ export default function Landing() {
             aria-label="PumpFun"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-              <path d="M12.7 2.4c-.2-.5-.9-.5-1.1 0L8.9 9.1c-.1.3-.4.5-.7.5H1.5c-.5 0-.7.7-.3 1l5.5 4c.3.2.4.6.2.9l-2.1 6.5c-.2.5.4.9.8.6l5.5-4c.3-.2.6-.2.9 0l5.5 4c.4.3 1-.1.8-.6l-2.1-6.5c-.1-.3 0-.7.2-.9l5.5-4c.4-.3.2-1-.3-1h-6.7c-.3 0-.6-.2-.7-.5L12.7 2.4z" />
+              <g transform="rotate(-45 12 12)">
+                <path d="M8 11.5V6a4 4 0 0 1 8 0v5.5H8z" />
+                <path d="M16 12.5V18a4 4 0 0 1-8 0V12.5h8z" />
+              </g>
             </svg>
           </a>
         </div>
