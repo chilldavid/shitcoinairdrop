@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import Link from "next/link";
 import { ClaimButton } from "@/components/ClaimButton";
 import { CLAIM_DEADLINE, CLAWBACK_START_TS } from "@/lib/constants";
@@ -20,151 +19,27 @@ const TOKEN_SPRITES: Record<string, string> = {
   BONK: "/bonk1.png",
 };
 
-const ALL_TOKENS = Object.keys(TOKEN_SPRITES);
-
-const TIERS = [
-  { label: "Off", value: "" },
-  { label: "0.0001%-0.001%", value: "0.0001% - 0.001%" },
-  { label: "0.001%-0.01%", value: "0.001% - 0.01%" },
-  { label: "0.01%-0.1%", value: "0.01% - 0.1%" },
-  { label: "0.1%-1%", value: "0.1% - 1%" },
-  { label: "1%-10%", value: "1% - 10%" },
-  { label: "10%+", value: "10%+" },
-];
-
-interface BreakdownEntry {
-  token: string;
-  tier: string;
-  pct: number;
-  points: number;
-}
-
-/* ── BEGIN TEST PANEL (remove this block when done) ── */
-function TestPanel({
-  holdings,
-  onToggle,
-  onReset,
-}: {
-  holdings: Record<string, string>;
-  onToggle: (token: string, tier: string) => void;
-  onReset: () => void;
-}) {
-  const [collapsed, setCollapsed] = useState(false);
-
-  return (
-    <div className={styles.testPanel}>
-      <div
-        className={styles.testPanelHeader}
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        <span className={styles.testPanelTitle}>TEST PANEL</span>
-        <button className={styles.testPanelToggle}>
-          {collapsed ? "+" : "-"}
-        </button>
-      </div>
-      {!collapsed && (
-        <div className={styles.testPanelBody}>
-          {ALL_TOKENS.map((token) => {
-            const active = !!holdings[token];
-            return (
-              <div
-                key={token}
-                className={`${styles.testCoinRow} ${active ? styles.testCoinActive : ""}`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={TOKEN_SPRITES[token]}
-                  alt={token}
-                  className={styles.testCoinIcon}
-                />
-                <span className={styles.testCoinName}>{token}</span>
-                <select
-                  className={styles.testTierSelect}
-                  value={holdings[token] || ""}
-                  onChange={(e) => onToggle(token, e.target.value)}
-                >
-                  {TIERS.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            );
-          })}
-          <button className={styles.testResetBtn} onClick={onReset}>
-            RESET ALL
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-/* ── END TEST PANEL ── */
-
 export default function ClaimPage() {
   const now = Math.floor(Date.now() / 1000);
   const isExpired = now >= CLAWBACK_START_TS;
 
-  /* ── BEGIN TEST STATE (remove this block when done) ── */
-  const [testHoldings, setTestHoldings] = useState<Record<string, string>>({});
-
-  const handleToggle = useCallback((token: string, tier: string) => {
-    setTestHoldings((prev) => {
-      const next = { ...prev };
-      if (tier === "") {
-        delete next[token];
-      } else {
-        next[token] = tier;
-      }
-      return next;
-    });
-  }, []);
-
-  const handleReset = useCallback(() => setTestHoldings({}), []);
-
-  // Build mock breakdown from test panel selections
-  const activeTokens = Object.entries(testHoldings).filter(([, tier]) => tier);
-  const mockBreakdown: BreakdownEntry[] | undefined =
-    activeTokens.length > 0
-      ? activeTokens.map(([token, tier]) => ({
-          token,
-          tier,
-          pct: parseTierMidpoint(tier),
-          points: 100,
-        }))
-      : undefined;
-
-  const mockProofData =
-    mockBreakdown && mockBreakdown.length > 0
-      ? {
-          eligible: true,
-          index: 0,
-          amount: String(mockBreakdown.length * 1000000000),
-          proof: [],
-          points: mockBreakdown.length * 100,
-          breakdown: mockBreakdown,
-        }
-      : undefined;
-  /* ── END TEST STATE ── */
-
   /* Falling parachute coin positions */
   const fallingCoins = [
-    { left: 5,  size: 60,  rotate: -12, delay: 0,    duration: 8  },
-    { left: 15, size: 45,  rotate: 8,   delay: 2.5,  duration: 10 },
-    { left: 25, size: 70,  rotate: -6,  delay: 1,    duration: 9  },
-    { left: 35, size: 40,  rotate: 15,  delay: 4,    duration: 11 },
-    { left: 45, size: 55,  rotate: -10, delay: 0.5,  duration: 8.5 },
-    { left: 55, size: 50,  rotate: 7,   delay: 3,    duration: 10.5 },
-    { left: 65, size: 65,  rotate: -14, delay: 1.5,  duration: 9.5 },
-    { left: 75, size: 42,  rotate: 11,  delay: 5,    duration: 12 },
-    { left: 85, size: 58,  rotate: -8,  delay: 2,    duration: 8  },
-    { left: 92, size: 48,  rotate: 13,  delay: 3.5,  duration: 10 },
-    { left: 10, size: 38,  rotate: -16, delay: 6,    duration: 11 },
-    { left: 50, size: 72,  rotate: 5,   delay: 7,    duration: 9  },
-    { left: 80, size: 44,  rotate: -9,  delay: 4.5,  duration: 10 },
-    { left: 30, size: 52,  rotate: 12,  delay: 8,    duration: 12 },
-    { left: 70, size: 36,  rotate: -5,  delay: 6.5,  duration: 11 },
+    { left: 5,  size: 120, rotate: -12, delay: 0,    duration: 8  },
+    { left: 15, size: 90,  rotate: 8,   delay: 2.5,  duration: 10 },
+    { left: 25, size: 140, rotate: -6,  delay: 1,    duration: 9  },
+    { left: 35, size: 80,  rotate: 15,  delay: 4,    duration: 11 },
+    { left: 45, size: 110, rotate: -10, delay: 0.5,  duration: 8.5 },
+    { left: 55, size: 100, rotate: 7,   delay: 3,    duration: 10.5 },
+    { left: 65, size: 130, rotate: -14, delay: 1.5,  duration: 9.5 },
+    { left: 75, size: 84,  rotate: 11,  delay: 5,    duration: 12 },
+    { left: 85, size: 116, rotate: -8,  delay: 2,    duration: 8  },
+    { left: 92, size: 96,  rotate: 13,  delay: 3.5,  duration: 10 },
+    { left: 10, size: 76,  rotate: -16, delay: 6,    duration: 11 },
+    { left: 50, size: 144, rotate: 5,   delay: 7,    duration: 9  },
+    { left: 80, size: 88,  rotate: -9,  delay: 4.5,  duration: 10 },
+    { left: 30, size: 104, rotate: 12,  delay: 8,    duration: 12 },
+    { left: 70, size: 72,  rotate: -5,  delay: 6.5,  duration: 11 },
   ];
 
   return (
@@ -237,10 +112,7 @@ export default function ClaimPage() {
             </p>
           </div>
         ) : (
-          <ClaimButton
-            tokenSprites={TOKEN_SPRITES}
-            mockProofData={mockProofData}
-          />
+          <ClaimButton tokenSprites={TOKEN_SPRITES} />
         )}
 
         {/* Footer */}
@@ -251,22 +123,6 @@ export default function ClaimPage() {
           </p>
         </div>
       </div>
-
-      {/* ── BEGIN TEST PANEL RENDER (remove this line when done) ── */}
-      <TestPanel
-        holdings={testHoldings}
-        onToggle={handleToggle}
-        onReset={handleReset}
-      />
-      {/* ── END TEST PANEL RENDER ── */}
     </div>
   );
-}
-
-/** Parse a tier string to a representative midpoint percentage */
-function parseTierMidpoint(tier: string): number {
-  if (tier.includes("10%+")) return 15;
-  const match = tier.match(/([\d.]+)%\s*-\s*([\d.]+)%/);
-  if (match) return (parseFloat(match[1]) + parseFloat(match[2])) / 2;
-  return 0.001;
 }
