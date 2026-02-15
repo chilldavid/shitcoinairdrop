@@ -62,7 +62,7 @@ export const CLAWBACK_RECEIVER = new PublicKey(
 );
 
 export const CLAWBACK_START_TS = Math.floor(
-  new Date("2027-05-01T00:00:00Z").getTime() / 1000
+  new Date("2026-05-01T00:00:00Z").getTime() / 1000
 );
 
 export const CLAIM_DEADLINE = new Date(CLAWBACK_START_TS * 1000).toLocaleDateString("en-US", {

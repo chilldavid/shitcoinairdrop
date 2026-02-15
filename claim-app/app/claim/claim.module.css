@@ -171,6 +171,10 @@
   color: #fcd868;
   margin: 0 0 10px;
   line-height: 1.6;
+  text-shadow:
+    0 0 10px rgba(0, 0, 0, 0.9),
+    0 0 20px rgba(0, 0, 0, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.9);
 }
 
 .subtitle {
@@ -178,6 +182,10 @@
   color: #c0b090;
   line-height: 2;
   margin: 0;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 6px 14px;
+  border: 2px solid #3a2204;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 
 .deadline {
