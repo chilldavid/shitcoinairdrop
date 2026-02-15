@@ -283,6 +283,11 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   // Format token amount for display
   const formatAmount = (raw: string) => {
     const num = Number(raw) / 10 ** TOKEN_DECIMALS;
+    if (num === 0) return "0";
+    // For small amounts, show enough decimals so the value isn't rounded to 0
+    if (num > 0 && num < 0.01) {
+      return num.toPrecision(3);
+    }
     return num.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -364,10 +369,13 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
     return (
       <div className={styles.claimCard}>
         <h2>Already Claimed</h2>
-        <p>
-          You have already claimed your {formatAmount(displayData.amount!)}{" "}
-          {TOKEN_SYMBOL} tokens.
+        <p className={styles.amount}>
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
         </p>
+        {displayData.breakdown &&
+          displayData.breakdown.length > 0 &&
+          renderBreakdown(displayData.breakdown)}
+        <p>You have already claimed your tokens.</p>
         {txSignature && (
           <a
             href={getExplorerUrl(txSignature)}
