@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import styles from "./landing.module.css";
 
 const CONTRACT_ADDRESS = "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump";
@@ -147,6 +148,9 @@ export default function Landing() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo_text.png" alt="Shitcoin Safari" className={styles.logo} />
           <button className={styles.playBtn}>Play Now</button>
+          <Link href="/claim" className={styles.claimLink}>
+            Claim Airdrop
+          </Link>
           <div className={styles.contractSection}>
             <span className={styles.contractCaption}>Get $SAFARI</span>
             <div className={styles.contractBar}>

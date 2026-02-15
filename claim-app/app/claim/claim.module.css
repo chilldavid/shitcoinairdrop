@@ -92,6 +92,28 @@
   justify-content: center;
 }
 
+/* ===== Back link ===== */
+.backLink {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #e8a820;
+  text-decoration: none;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  border: 2px solid #5a3a08;
+  background: rgba(0, 0, 0, 0.5);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+
+.backLink:hover {
+  background: rgba(232, 168, 32, 0.2);
+  border-color: #e8a820;
+  color: #fcd868;
+  text-decoration: none;
+}
+
 /* ===== Header ===== */
 .header {
   text-align: center;

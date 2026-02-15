@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { ClaimButton } from "@/components/ClaimButton";
 import { CLAIM_DEADLINE, CLAWBACK_START_TS } from "@/lib/constants";
 import styles from "./claim.module.css";
@@ -157,6 +158,10 @@ export default function ClaimPage() {
       <div className={styles.scanlines} />
 
       <div className={styles.content}>
+        <Link href="/" className={styles.backLink}>
+          &larr; Back to Home
+        </Link>
+
         {/* Header */}
         <div className={styles.header}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
