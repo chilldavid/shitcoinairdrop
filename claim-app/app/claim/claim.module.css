@@ -134,9 +134,6 @@
   color: #fcd868;
   margin: 0 0 10px;
   line-height: 1.6;
-  text-shadow:
-    0 0 20px rgba(232, 168, 32, 0.4),
-    0 2px 0 #b07818;
 }
 
 .subtitle {
@@ -185,7 +182,6 @@
   margin: 0;
   line-height: 1.6;
   text-align: center;
-  text-shadow: 0 2px 0 #b07818;
 }
 
 .claimCard p {
@@ -200,9 +196,6 @@
   font-size: 24px;
   font-weight: 700;
   color: #4caf50 !important;
-  text-shadow:
-    0 0 15px rgba(76, 175, 80, 0.4),
-    0 2px 0 #2a7a2a;
 }
 
 .errorMsg {
