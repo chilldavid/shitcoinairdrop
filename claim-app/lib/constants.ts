@@ -54,7 +54,7 @@ export const RPC_ENDPOINT = IS_DEVNET
 
 // Token decimals (6 for Token-2022 mainnet token)
 export const TOKEN_DECIMALS = 6;
-export const TOKEN_SYMBOL = "AIRDROP";
+export const TOKEN_SYMBOL = "$SAFARI";
 
 // Clawback configuration
 export const CLAWBACK_RECEIVER = new PublicKey(

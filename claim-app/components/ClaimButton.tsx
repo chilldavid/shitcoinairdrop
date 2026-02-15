@@ -377,7 +377,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
       <div className={styles.claimCard}>
         <h2>You are eligible!</h2>
         <p className={styles.amount}>
-          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens
         </p>
         {displayData.breakdown &&
           displayData.breakdown.length > 0 &&
@@ -393,7 +393,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
       <div className={styles.claimCard}>
         <h2>Already Claimed</h2>
         <p className={styles.amount}>
-          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens
         </p>
         {displayData.breakdown &&
           displayData.breakdown.length > 0 &&
@@ -440,7 +440,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
     <div className={styles.claimCard}>
       <h2>You are eligible!</h2>
       <p className={styles.amount}>
-        {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+        {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens
       </p>
       {displayData.breakdown &&
         displayData.breakdown.length > 0 &&
