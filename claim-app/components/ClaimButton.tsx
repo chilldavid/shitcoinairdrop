@@ -415,18 +415,13 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
         displayData.breakdown.length > 0 &&
         renderBreakdown(displayData.breakdown)}
       {!mockProofData && (
-        <>
-          <button
-            onClick={handleClaim}
-            disabled={claiming}
-            className={`${styles.claimBtn} ${styles.claimBtnGreen}`}
-          >
-            {claiming ? "Claiming..." : "Claim Tokens"}
-          </button>
-          <p className={styles.note}>
-            You will pay a small SOL fee (~0.005 SOL) for the transaction.
-          </p>
-        </>
+        <button
+          onClick={handleClaim}
+          disabled={claiming}
+          className={`${styles.claimBtn} ${styles.claimBtnGreen}`}
+        >
+          {claiming ? "Claiming..." : "Claim Tokens"}
+        </button>
       )}
       {mockProofData && (
         <button disabled className={styles.claimBtn}>
