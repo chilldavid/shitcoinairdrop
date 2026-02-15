@@ -1,0 +1,562 @@
+.page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Parallax background layers ===== */
+.bgSky {
+  position: fixed;
+  inset: 0;
+  background-image: url('/sky_1x.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  z-index: 0;
+}
+
+.bgMountainsFar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background-image: url('/mountains_far_1x.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  z-index: 1;
+}
+
+.bgMountainsClose {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background-image: url('/mountains_close_1x.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  z-index: 2;
+}
+
+/* Slight darkening overlay for readability */
+.bgOverlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.25) 60%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 3;
+}
+
+/* Retro CRT scanlines */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+}
+
+/* ===== Main content ===== */
+.content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: center;
+}
+
+/* ===== Header ===== */
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logo {
+  max-width: 360px;
+  width: 70vw;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 22px;
+  color: #fcd868;
+  margin: 0 0 10px;
+  line-height: 1.6;
+  text-shadow:
+    0 0 20px rgba(232, 168, 32, 0.4),
+    0 2px 0 #b07818;
+}
+
+.subtitle {
+  font-size: 10px;
+  color: #c0b090;
+  line-height: 2;
+  margin: 0;
+}
+
+.deadline {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #5a3a08;
+  font-size: 9px;
+  color: #e8a820;
+  letter-spacing: 1px;
+}
+
+.deadlineExpired {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* ===== Claim card ===== */
+.claimCard {
+  background: rgba(12, 12, 20, 0.92);
+  border: 3px solid #5a3a08;
+  box-shadow:
+    inset 0 0 0 2px #3a2204,
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(232, 168, 32, 0.08);
+  padding: 32px;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.claimCard h2 {
+  font-size: 16px;
+  color: #fcd868;
+  margin: 0;
+  line-height: 1.6;
+  text-align: center;
+  text-shadow: 0 2px 0 #b07818;
+}
+
+.claimCard p {
+  font-size: 10px;
+  color: #c0b090;
+  line-height: 2;
+  margin: 0;
+  text-align: center;
+}
+
+.amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4caf50 !important;
+  text-shadow:
+    0 0 15px rgba(76, 175, 80, 0.4),
+    0 2px 0 #2a7a2a;
+}
+
+.errorMsg {
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 10px;
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  width: 100%;
+  text-align: center;
+}
+
+.note {
+  font-size: 8px !important;
+  color: #888 !important;
+}
+
+/* ===== Breakdown ===== */
+.breakdown {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid #3a2204;
+  padding: 16px;
+}
+
+.breakdownTitle {
+  font-size: 9px;
+  color: #e8a820;
+  margin: 0 0 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.breakdownList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breakdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #3a2204;
+}
+
+.breakdownItem:last-child {
+  border-bottom: none;
+}
+
+.mascotIcon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  flex-shrink: 0;
+  animation: mascotBounce 0.8s ease-in-out infinite alternate;
+}
+
+.breakdownItem:nth-child(2n) .mascotIcon {
+  animation-delay: 0.4s;
+}
+
+@keyframes mascotBounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.tokenName {
+  font-size: 10px;
+  color: #fcd868;
+  flex-shrink: 0;
+}
+
+.tierBadge {
+  margin-left: auto;
+  background: rgba(232, 168, 32, 0.2);
+  color: #e8a820;
+  padding: 4px 8px;
+  border: 1px solid #5a3a08;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
+  white-space: nowrap;
+}
+
+/* ===== Buttons ===== */
+.claimBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #fff;
+  background: #e8a820;
+  border: none;
+  padding: 16px 40px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: transform 0.1s;
+  box-shadow:
+    inset -4px -4px 0 #b07818,
+    inset 4px 4px 0 #fcd868,
+    0 0 0 3px #5a3a08,
+    0 4px 0 3px #3a2204,
+    0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.claimBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #fcd868;
+  box-shadow:
+    inset -4px -4px 0 #e8a820,
+    inset 4px 4px 0 #fff8b0,
+    0 0 0 3px #5a3a08,
+    0 6px 0 3px #3a2204,
+    0 8px 20px rgba(232, 168, 32, 0.4);
+}
+
+.claimBtn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    inset -4px -4px 0 #b07818,
+    inset 4px 4px 0 #fcd868,
+    0 0 0 3px #5a3a08,
+    0 2px 0 3px #3a2204,
+    0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.claimBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #8a6810;
+}
+
+.claimBtnGreen {
+  background: #4caf50;
+  box-shadow:
+    inset -4px -4px 0 #2a7a2a,
+    inset 4px 4px 0 #80e080,
+    0 0 0 3px #1a4a1a,
+    0 4px 0 3px #0a2a0a,
+    0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.claimBtnGreen:hover:not(:disabled) {
+  background: #66cc66;
+  box-shadow:
+    inset -4px -4px 0 #4caf50,
+    inset 4px 4px 0 #aaffaa,
+    0 0 0 3px #1a4a1a,
+    0 6px 0 3px #0a2a0a,
+    0 8px 20px rgba(76, 175, 80, 0.4);
+}
+
+/* Wallet adapter overrides */
+.claimCard :global(.wallet-adapter-button-trigger) {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 9px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  border: 2px solid #5a3a08 !important;
+  color: #e8a820 !important;
+  padding: 10px 16px !important;
+  transition: border-color 0.15s, background 0.15s !important;
+}
+
+.claimCard :global(.wallet-adapter-button-trigger:hover) {
+  border-color: #e8a820 !important;
+  background: rgba(232, 168, 32, 0.15) !important;
+}
+
+/* ===== Success state ===== */
+.successLink {
+  font-size: 9px;
+  color: #e8a820;
+  text-decoration: none;
+  border-bottom: 1px solid #5a3a08;
+  padding-bottom: 2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.successLink:hover {
+  color: #fcd868;
+  border-color: #e8a820;
+  text-decoration: none;
+}
+
+/* ===== Expired notice ===== */
+.expiredNotice {
+  background: rgba(239, 68, 68, 0.1);
+  border: 3px solid rgba(239, 68, 68, 0.4);
+  padding: 24px;
+  max-width: 520px;
+  text-align: center;
+}
+
+.expiredNotice p {
+  font-size: 10px;
+  color: #c0b090;
+  line-height: 2;
+  margin: 0;
+}
+
+/* ===== Footer ===== */
+.footer {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 24px;
+  margin-top: 28px;
+}
+
+.footer p {
+  font-size: 8px;
+  color: #c0b090;
+  line-height: 2.2;
+  margin: 0;
+}
+
+/* ===== Test Panel (removable) ===== */
+.testPanel {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 100;
+  background: rgba(12, 12, 20, 0.95);
+  border: 2px solid #e8a820;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  padding: 0;
+  font-family: 'Press Start 2P', monospace;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 320px;
+}
+
+.testPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(232, 168, 32, 0.15);
+  border-bottom: 1px solid #5a3a08;
+  cursor: pointer;
+  user-select: none;
+}
+
+.testPanelTitle {
+  font-size: 8px;
+  color: #e8a820;
+  margin: 0;
+}
+
+.testPanelToggle {
+  font-size: 10px;
+  color: #e8a820;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.testPanelBody {
+  padding: 12px;
+}
+
+.testCoinRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #3a2204;
+}
+
+.testCoinRow:last-child {
+  border-bottom: none;
+}
+
+.testCoinIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.testCoinName {
+  font-size: 7px;
+  color: #c0b090;
+  flex: 1;
+  min-width: 0;
+}
+
+.testCoinActive .testCoinName {
+  color: #fcd868;
+}
+
+.testTierSelect {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  background: #1a1a2a;
+  color: #e8a820;
+  border: 1px solid #5a3a08;
+  padding: 4px 6px;
+  cursor: pointer;
+  max-width: 110px;
+}
+
+.testTierSelect option {
+  font-size: 10px;
+  font-family: monospace;
+}
+
+.testResetBtn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 8px 12px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 12px;
+  transition: background 0.15s;
+}
+
+.testResetBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .content {
+    padding: 24px 12px;
+  }
+
+  .logo {
+    max-width: 260px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .claimCard {
+    padding: 20px 16px;
+  }
+
+  .claimCard h2 {
+    font-size: 12px;
+  }
+
+  .amount {
+    font-size: 18px;
+  }
+
+  .claimBtn {
+    font-size: 11px;
+    padding: 14px 28px;
+  }
+
+  .mascotIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .tokenName {
+    font-size: 8px;
+  }
+
+  .tierBadge {
+    font-size: 6px;
+    padding: 3px 6px;
+  }
+
+  .testPanel {
+    width: 280px;
+    bottom: 8px;
+    right: 8px;
+  }
+}
