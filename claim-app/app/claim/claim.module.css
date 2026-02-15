@@ -51,6 +51,43 @@
   z-index: 2;
 }
 
+/* ===== Falling parachute coins ===== */
+.fallingCoinsLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  /* sits between bgMountainsClose (z:2) and bgOverlay (z:3) */
+}
+
+.fallingCoin {
+  position: absolute;
+  top: -100px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  opacity: 0.35;
+  filter: drop-shadow(0 4px 12px rgba(232, 168, 32, 0.3));
+  animation: coinFall linear infinite;
+}
+
+@keyframes coinFall {
+  0% {
+    top: -120px;
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.35;
+  }
+  90% {
+    opacity: 0.35;
+  }
+  100% {
+    top: 110vh;
+    opacity: 0;
+  }
+}
+
 /* Slight darkening overlay for readability */
 .bgOverlay {
   position: fixed;

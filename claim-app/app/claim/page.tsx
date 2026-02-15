@@ -148,12 +148,53 @@ export default function ClaimPage() {
       : undefined;
   /* ── END TEST STATE ── */
 
+  /* Falling parachute coin positions */
+  const fallingCoins = [
+    { left: 5,  size: 60,  rotate: -12, delay: 0,    duration: 8  },
+    { left: 15, size: 45,  rotate: 8,   delay: 2.5,  duration: 10 },
+    { left: 25, size: 70,  rotate: -6,  delay: 1,    duration: 9  },
+    { left: 35, size: 40,  rotate: 15,  delay: 4,    duration: 11 },
+    { left: 45, size: 55,  rotate: -10, delay: 0.5,  duration: 8.5 },
+    { left: 55, size: 50,  rotate: 7,   delay: 3,    duration: 10.5 },
+    { left: 65, size: 65,  rotate: -14, delay: 1.5,  duration: 9.5 },
+    { left: 75, size: 42,  rotate: 11,  delay: 5,    duration: 12 },
+    { left: 85, size: 58,  rotate: -8,  delay: 2,    duration: 8  },
+    { left: 92, size: 48,  rotate: 13,  delay: 3.5,  duration: 10 },
+    { left: 10, size: 38,  rotate: -16, delay: 6,    duration: 11 },
+    { left: 50, size: 72,  rotate: 5,   delay: 7,    duration: 9  },
+    { left: 80, size: 44,  rotate: -9,  delay: 4.5,  duration: 10 },
+    { left: 30, size: 52,  rotate: 12,  delay: 8,    duration: 12 },
+    { left: 70, size: 36,  rotate: -5,  delay: 6.5,  duration: 11 },
+  ];
+
   return (
     <div className={styles.page}>
       {/* Parallax background */}
       <div className={styles.bgSky} />
       <div className={styles.bgMountainsFar} />
       <div className={styles.bgMountainsClose} />
+
+      {/* Falling parachute coins */}
+      <div className={styles.fallingCoinsLayer}>
+        {fallingCoins.map((coin, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={i}
+            src="/gold_coin_parachute.png"
+            alt=""
+            className={styles.fallingCoin}
+            style={{
+              left: `${coin.left}%`,
+              width: `${coin.size}px`,
+              height: `${coin.size}px`,
+              transform: `rotate(${coin.rotate}deg)`,
+              animationDelay: `${coin.delay}s`,
+              animationDuration: `${coin.duration}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <div className={styles.bgOverlay} />
       <div className={styles.scanlines} />
 
