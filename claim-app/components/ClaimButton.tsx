@@ -24,6 +24,7 @@ import {
   EXPLORER_URL,
 } from "@/lib/constants";
 import { createHash } from "crypto";
+import styles from "@/app/claim/claim.module.css";
 
 interface BreakdownEntry {
   token: string;
@@ -46,6 +47,11 @@ interface ClaimStatus {
   hasClaimed: boolean;
 }
 
+interface ClaimButtonProps {
+  tokenSprites?: Record<string, string>;
+  mockProofData?: ProofData;
+}
+
 // Calculate Anchor discriminator
 function getDiscriminator(name: string): Buffer {
   const preimage = `global:${name}`;
@@ -54,19 +60,28 @@ function getDiscriminator(name: string): Buffer {
   ).slice(0, 8);
 }
 
-export const ClaimButton: FC = () => {
+export const ClaimButton: FC<ClaimButtonProps> = ({
+  tokenSprites = {},
+  mockProofData,
+}) => {
   const { connection } = useConnection();
   const { publicKey, signTransaction, connected } = useWallet();
 
   const [proofData, setProofData] = useState<ProofData | null>(null);
   const [claimStatus, setClaimStatus] = useState<ClaimStatus | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingClaim, setCheckingClaim] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [txSignature, setTxSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch proof data when wallet connects
+  // Use mock data if provided, otherwise use real proof data
+  const displayData = mockProofData || proofData;
+
+  // Fetch proof data when wallet connects (only when not mocking)
   useEffect(() => {
+    if (mockProofData) return;
+
     if (!publicKey) {
       setProofData(null);
       setClaimStatus(null);
@@ -90,16 +105,20 @@ export const ClaimButton: FC = () => {
     };
 
     fetchProof();
-  }, [publicKey]);
+  }, [publicKey, mockProofData]);
 
   // Check if user has already claimed
   useEffect(() => {
+    if (mockProofData) return;
+
     if (!publicKey || !proofData?.eligible || proofData.index === undefined) {
       setClaimStatus(null);
+      setCheckingClaim(false);
       return;
     }
 
     const checkClaimStatus = async () => {
+      setCheckingClaim(true);
       try {
         // Derive ClaimStatus PDA: ["claim", distributor, index]
         const indexBytes = Buffer.alloc(8);
@@ -119,11 +138,15 @@ export const ClaimButton: FC = () => {
         setClaimStatus({ hasClaimed: accountInfo !== null });
       } catch (err) {
         console.error("Failed to check claim status:", err);
+        // Default to not claimed so user can still attempt (program will reject if already claimed)
+        setClaimStatus({ hasClaimed: false });
+      } finally {
+        setCheckingClaim(false);
       }
     };
 
     checkClaimStatus();
-  }, [publicKey, proofData, connection]);
+  }, [publicKey, proofData, connection, mockProofData]);
 
   const handleClaim = useCallback(async () => {
     if (!publicKey || !signTransaction || !proofData?.eligible) return;
@@ -201,28 +224,18 @@ export const ClaimButton: FC = () => {
       const data = Buffer.concat([discriminator, indexBytes, amountBuf, proofDataBuf]);
 
       // Build claim instruction
-      // Accounts order from our Anchor program:
-      // 1. claimant (signer, mut)
-      // 2. distributor (mut)
-      // 3. claim_status (init)
-      // 4. mint
-      // 5. vault (mut)
-      // 6. claimant_token_account (init_if_needed)
-      // 7. token_program
-      // 8. associated_token_program
-      // 9. system_program
       const claimIx = new TransactionInstruction({
         programId: MERKLE_CLAIM_PROGRAM_ID,
         keys: [
-          { pubkey: publicKey, isSigner: true, isWritable: true }, // claimant
-          { pubkey: DISTRIBUTOR_PUBKEY, isSigner: false, isWritable: true }, // distributor
-          { pubkey: claimStatusPda, isSigner: false, isWritable: true }, // claim_status
-          { pubkey: TOKEN_MINT, isSigner: false, isWritable: false }, // mint
-          { pubkey: vault, isSigner: false, isWritable: true }, // vault
-          { pubkey: userAta, isSigner: false, isWritable: true }, // claimant_token_account
-          { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false }, // token_program
-          { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }, // associated_token_program
-          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // system_program
+          { pubkey: publicKey, isSigner: true, isWritable: true },
+          { pubkey: DISTRIBUTOR_PUBKEY, isSigner: false, isWritable: true },
+          { pubkey: claimStatusPda, isSigner: false, isWritable: true },
+          { pubkey: TOKEN_MINT, isSigner: false, isWritable: false },
+          { pubkey: vault, isSigner: false, isWritable: true },
+          { pubkey: userAta, isSigner: false, isWritable: true },
+          { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false },
+          { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         data,
       });
@@ -277,6 +290,11 @@ export const ClaimButton: FC = () => {
   // Format token amount for display
   const formatAmount = (raw: string) => {
     const num = Number(raw) / 10 ** TOKEN_DECIMALS;
+    if (num === 0) return "0";
+    // For small amounts, show enough decimals so the value isn't rounded to 0
+    if (num > 0 && num < 0.01) {
+      return num.toPrecision(3);
+    }
     return num.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -287,35 +305,62 @@ export const ClaimButton: FC = () => {
     return EXPLORER_URL.replace("{signature}", signature);
   };
 
-  if (!connected) {
+  /** Shared breakdown renderer with mascot icons */
+  const renderBreakdown = (breakdown: BreakdownEntry[]) => (
+    <div className={styles.breakdown}>
+      <p className={styles.breakdownTitle}>Your holdings at snapshot:</p>
+      <ul className={styles.breakdownList}>
+        {breakdown.map((entry, i) => (
+          <li key={i} className={styles.breakdownItem}>
+            {tokenSprites[entry.token] && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={tokenSprites[entry.token]}
+                alt={entry.token}
+                className={styles.mascotIcon}
+              />
+            )}
+            <span className={styles.tokenName}>{entry.token}</span>
+            <span className={styles.tierBadge}>{entry.tier}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  // ── Not connected ──
+  if (!connected && !mockProofData) {
     return (
-      <div className="claim-container">
+      <div className={styles.claimCard}>
         <h2>Connect your wallet to check eligibility</h2>
         <WalletMultiButton />
       </div>
     );
   }
 
-  if (loading) {
+  // ── Loading ──
+  if (loading && !mockProofData) {
     return (
-      <div className="claim-container">
+      <div className={styles.claimCard}>
         <p>Checking eligibility...</p>
       </div>
     );
   }
 
-  if (error) {
+  // ── Error ──
+  if (error && !mockProofData) {
     return (
-      <div className="claim-container">
-        <p className="error">{error}</p>
+      <div className={styles.claimCard}>
+        <p className={styles.errorMsg}>{error}</p>
         <WalletMultiButton />
       </div>
     );
   }
 
-  if (!proofData?.eligible) {
+  // ── Not eligible ──
+  if (!displayData?.eligible) {
     return (
-      <div className="claim-container">
+      <div className={styles.claimCard}>
         <h2>Not Eligible</h2>
         <p>
           This wallet is not eligible for the airdrop. You need to hold at least
@@ -326,19 +371,40 @@ export const ClaimButton: FC = () => {
     );
   }
 
-  if (claimStatus?.hasClaimed) {
+  // ── Checking claim status ──
+  if (checkingClaim && !mockProofData) {
     return (
-      <div className="claim-container">
-        <h2>Already Claimed</h2>
-        <p>
-          You have already claimed your {formatAmount(proofData.amount!)}{" "}
-          {TOKEN_SYMBOL} tokens.
+      <div className={styles.claimCard}>
+        <h2>You are eligible!</h2>
+        <p className={styles.amount}>
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
         </p>
+        {displayData.breakdown &&
+          displayData.breakdown.length > 0 &&
+          renderBreakdown(displayData.breakdown)}
+        <p>Checking claim status...</p>
+      </div>
+    );
+  }
+
+  // ── Already claimed ──
+  if (claimStatus?.hasClaimed && !mockProofData) {
+    return (
+      <div className={styles.claimCard}>
+        <h2>Already Claimed</h2>
+        <p className={styles.amount}>
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+        </p>
+        {displayData.breakdown &&
+          displayData.breakdown.length > 0 &&
+          renderBreakdown(displayData.breakdown)}
+        <p>You have already claimed your tokens.</p>
         {txSignature && (
           <a
             href={getExplorerUrl(txSignature)}
             target="_blank"
             rel="noopener noreferrer"
+            className={styles.successLink}
           >
             View transaction
           </a>
@@ -348,17 +414,19 @@ export const ClaimButton: FC = () => {
     );
   }
 
-  if (txSignature) {
+  // ── Claim success ──
+  if (txSignature && !mockProofData) {
     return (
-      <div className="claim-container">
+      <div className={styles.claimCard}>
         <h2>Claim Successful!</h2>
         <p>
-          You claimed {formatAmount(proofData.amount!)} {TOKEN_SYMBOL} tokens.
+          You claimed {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens.
         </p>
         <a
           href={getExplorerUrl(txSignature)}
           target="_blank"
           rel="noopener noreferrer"
+          className={styles.successLink}
         >
           View transaction on Solscan
         </a>
@@ -367,34 +435,31 @@ export const ClaimButton: FC = () => {
     );
   }
 
+  // ── Eligible: show breakdown + claim button ──
   return (
-    <div className="claim-container">
+    <div className={styles.claimCard}>
       <h2>You are eligible!</h2>
-      <p className="amount">
-        {formatAmount(proofData.amount!)} {TOKEN_SYMBOL}
+      <p className={styles.amount}>
+        {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
       </p>
-      {proofData.breakdown && proofData.breakdown.length > 0 && (
-        <div className="breakdown">
-          <p className="breakdown-title">Your holdings at snapshot:</p>
-          <ul className="breakdown-list">
-            {proofData.breakdown.map((entry, i) => (
-              <li key={i}>
-                <span className="token-name">{entry.token}</span>
-                <span className="tier-badge">{entry.tier}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {displayData.breakdown &&
+        displayData.breakdown.length > 0 &&
+        renderBreakdown(displayData.breakdown)}
+      {!mockProofData && (
+        <button
+          onClick={handleClaim}
+          disabled={claiming}
+          className={`${styles.claimBtn} ${styles.claimBtnGreen}`}
+        >
+          {claiming ? "Claiming..." : "Claim Tokens"}
+        </button>
       )}
-      <button
-        onClick={handleClaim}
-        disabled={claiming}
-        className="claim-button"
-      >
-        {claiming ? "Claiming..." : "Claim Tokens"}
-      </button>
-      <p className="note">You will pay a small SOL fee (~0.005 SOL) for the transaction.</p>
-      <WalletMultiButton />
+      {mockProofData && (
+        <button disabled className={styles.claimBtn}>
+          Claim Tokens
+        </button>
+      )}
+      {!mockProofData && <WalletMultiButton />}
     </div>
   );
 };
