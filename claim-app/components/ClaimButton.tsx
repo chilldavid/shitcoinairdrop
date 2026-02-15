@@ -70,6 +70,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   const [proofData, setProofData] = useState<ProofData | null>(null);
   const [claimStatus, setClaimStatus] = useState<ClaimStatus | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingClaim, setCheckingClaim] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [txSignature, setTxSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -112,10 +113,12 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
 
     if (!publicKey || !proofData?.eligible || proofData.index === undefined) {
       setClaimStatus(null);
+      setCheckingClaim(false);
       return;
     }
 
     const checkClaimStatus = async () => {
+      setCheckingClaim(true);
       try {
         // Derive ClaimStatus PDA: ["claim", distributor, index]
         const indexBytes = Buffer.alloc(8);
@@ -135,6 +138,10 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
         setClaimStatus({ hasClaimed: accountInfo !== null });
       } catch (err) {
         console.error("Failed to check claim status:", err);
+        // Default to not claimed so user can still attempt (program will reject if already claimed)
+        setClaimStatus({ hasClaimed: false });
+      } finally {
+        setCheckingClaim(false);
       }
     };
 
@@ -360,6 +367,22 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
           0.0001% of one of the qualifying tokens.
         </p>
         <WalletMultiButton />
+      </div>
+    );
+  }
+
+  // ── Checking claim status ──
+  if (checkingClaim && !mockProofData) {
+    return (
+      <div className={styles.claimCard}>
+        <h2>You are eligible!</h2>
+        <p className={styles.amount}>
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+        </p>
+        {displayData.breakdown &&
+          displayData.breakdown.length > 0 &&
+          renderBreakdown(displayData.breakdown)}
+        <p>Checking claim status...</p>
       </div>
     );
   }
