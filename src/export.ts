@@ -7,8 +7,14 @@
  *   Tier 3: 0.01%   - 0.1%   of supply  → 12 points  (3x T2)
  *   Tier 4: 0.1%+   of supply            → 24 points  (2x T3)
  *
- * Points stack across all token holdings. Each token is scored independently.
- * Holdings below 0.0001% are excluded.
+ * Presale tier system (by SOL contributed):
+ *   Presale T1: 0.1 - 1 SOL    →  1 point
+ *   Presale T2: 1 - 10 SOL     →  4 points
+ *   Presale T3: 10 - 100 SOL   → 12 points
+ *   Presale T4: 100+ SOL       → 24 points
+ *
+ * Points stack across all token holdings AND presale contributions.
+ * Holdings below 0.0001% are excluded. Presale below 0.1 SOL excluded.
  *
  * Usage:
  *   npm run export                                 # export with point scores
@@ -19,6 +25,7 @@
  *   output/eligible_wallets.json  — JSON for Merkle tree generation
  */
 import fs from "fs";
+import path from "path";
 import {
   getEligibleWallets,
   getSnapshotSummary,
@@ -28,7 +35,7 @@ import {
 } from "./db";
 import { config } from "./config";
 
-// --- Tier Configuration ---
+// --- Token Tier Configuration ---
 interface Tier {
   name: string;
   minPct: number;   // inclusive
@@ -43,6 +50,29 @@ const TIERS: Tier[] = [
   { name: "Tier 4", minPct: 0.1,    maxPct: Infinity,  points: 24 },
 ];
 
+// --- Presale Tier Configuration (by SOL amount) ---
+interface PresaleTier {
+  name: string;
+  minSol: number;   // inclusive
+  maxSol: number;   // exclusive
+  points: number;
+}
+
+const PRESALE_TIERS: PresaleTier[] = [
+  { name: "Presale T1", minSol: 0.1,   maxSol: 1,        points: 1 },
+  { name: "Presale T2", minSol: 1,     maxSol: 10,       points: 4 },
+  { name: "Presale T3", minSol: 10,    maxSol: 100,      points: 12 },
+  { name: "Presale T4", minSol: 100,   maxSol: Infinity, points: 24 },
+];
+
+interface PresaleContributor {
+  wallet: string;
+  lamports: string;
+  sol: number;
+  txCount: number;
+  pctOfTotal: number;
+}
+
 function getTier(pctOfSupply: number): Tier | null {
   for (const tier of TIERS) {
     if (pctOfSupply >= tier.minPct && pctOfSupply < tier.maxPct) {
@@ -50,6 +80,37 @@ function getTier(pctOfSupply: number): Tier | null {
     }
   }
   return null; // below 0.0001%, not eligible
+}
+
+function getPresaleTier(solAmount: number): PresaleTier | null {
+  for (const tier of PRESALE_TIERS) {
+    if (solAmount >= tier.minSol && solAmount < tier.maxSol) {
+      return tier;
+    }
+  }
+  return null; // below 0.1 SOL, not eligible
+}
+
+function loadPresaleContributors(): Map<string, PresaleContributor> {
+  const presalePath = path.join(config.dataDir, "presale_contributors.json");
+  const contributors = new Map<string, PresaleContributor>();
+
+  if (!fs.existsSync(presalePath)) {
+    console.log("  No presale data found (data/presale_contributors.json)");
+    return contributors;
+  }
+
+  try {
+    const data = JSON.parse(fs.readFileSync(presalePath, "utf-8")) as PresaleContributor[];
+    for (const c of data) {
+      contributors.set(c.wallet, c);
+    }
+    console.log(`  Loaded ${contributors.size} presale contributors`);
+  } catch (err) {
+    console.warn(`  Warning: Could not load presale data: ${err}`);
+  }
+
+  return contributors;
 }
 
 function scoreHoldings(holdings: TokenHolding[]): {
@@ -87,33 +148,42 @@ function main(): void {
       ? BigInt(args[supplyIdx + 1])
       : null;
 
+  // Load presale contributors
+  console.log("=== Loading Data ===");
+  const presaleContributors = loadPresaleContributors();
+
   // Get eligible wallets (min 1 token, exclude known addresses)
   const summary = getSnapshotSummary();
-  if (summary.length === 0) {
-    console.error("No snapshots found. Run `npm run snapshot` first.");
+  const hasTokenSnapshot = summary.length > 0;
+
+  if (!hasTokenSnapshot && presaleContributors.size === 0) {
+    console.error("No data found. Run `npm run snapshot` and/or `npm run presale-snapshot` first.");
     process.exit(1);
   }
 
-  const eligible = getEligibleWallets(1, true);
-  if (eligible.length === 0) {
-    console.error("No eligible wallets found.");
-    process.exit(1);
-  }
+  const eligible = hasTokenSnapshot ? getEligibleWallets(1, true) : [];
+  console.log(`  Loaded ${eligible.length} token holders from snapshot`);
 
-  // Score every wallet
-  const scored: {
+  // Build a map of all wallets (token holders + presale contributors)
+  const allWallets = new Map<string, {
     wallet: string;
     points: number;
     tokenCount: number;
+    presaleSol: number;
     breakdown: { token: string; tier: string; pct: number; points: number }[];
-  }[] = [];
+  }>();
 
+  // Score every wallet
   let grandTotalPoints = 0;
   const tierStats = new Map<string, { walletEntries: number; totalPoints: number }>();
   for (const t of TIERS) {
     tierStats.set(t.name, { walletEntries: 0, totalPoints: 0 });
   }
+  for (const t of PRESALE_TIERS) {
+    tierStats.set(t.name, { walletEntries: 0, totalPoints: 0 });
+  }
 
+  // Process token holders
   for (const h of eligible) {
     const holdings = parseHoldings(h.tokens);
     const { totalPoints, tierBreakdown } = scoreHoldings(holdings);
@@ -121,10 +191,11 @@ function main(): void {
     if (totalPoints === 0) continue; // no holdings above 0.0001%
 
     grandTotalPoints += totalPoints;
-    scored.push({
+    allWallets.set(h.wallet, {
       wallet: h.wallet,
       points: totalPoints,
       tokenCount: h.tokenCount,
+      presaleSol: 0,
       breakdown: tierBreakdown,
     });
 
@@ -136,6 +207,54 @@ function main(): void {
       }
     }
   }
+
+  // Process presale contributors
+  let presaleEligible = 0;
+  for (const [wallet, contributor] of presaleContributors) {
+    const tier = getPresaleTier(contributor.sol);
+    if (!tier) continue; // below 0.1 SOL
+
+    presaleEligible++;
+    grandTotalPoints += tier.points;
+
+    const existing = allWallets.get(wallet);
+    if (existing) {
+      // Wallet already has token holdings - add presale points
+      existing.points += tier.points;
+      existing.presaleSol = contributor.sol;
+      existing.breakdown.push({
+        token: "PRESALE",
+        tier: tier.name,
+        pct: contributor.pctOfTotal,
+        points: tier.points,
+      });
+    } else {
+      // New wallet - presale only
+      allWallets.set(wallet, {
+        wallet,
+        points: tier.points,
+        tokenCount: 0,
+        presaleSol: contributor.sol,
+        breakdown: [{
+          token: "PRESALE",
+          tier: tier.name,
+          pct: contributor.pctOfTotal,
+          points: tier.points,
+        }],
+      });
+    }
+
+    const stat = tierStats.get(tier.name);
+    if (stat) {
+      stat.walletEntries++;
+      stat.totalPoints += tier.points;
+    }
+  }
+
+  console.log(`  Presale eligible (>=0.1 SOL): ${presaleEligible}`);
+
+  // Convert to array and sort
+  const scored = Array.from(allWallets.values());
 
   // Sort by points descending
   scored.sort((a, b) => b.points - a.points || a.wallet.localeCompare(b.wallet));
@@ -157,22 +276,29 @@ function main(): void {
       amount,
       points: s.points,
       tokenCount: s.tokenCount,
+      presaleSol: s.presaleSol,
       breakdown: s.breakdown,
     };
   });
 
   // --- Print Tier Summary ---
-  console.log("=== Tier Configuration ===");
+  console.log("\n=== Token Tier Configuration ===");
   for (const t of TIERS) {
     const maxLabel = t.maxPct === Infinity ? "+" : `- ${t.maxPct}%`;
     console.log(`  ${t.name}: ${t.minPct}% ${maxLabel}  →  ${t.points} point(s)`);
   }
 
+  console.log("\n=== Presale Tier Configuration ===");
+  for (const t of PRESALE_TIERS) {
+    const maxLabel = t.maxSol === Infinity ? "+" : `- ${t.maxSol}`;
+    console.log(`  ${t.name}: ${t.minSol} SOL ${maxLabel}  →  ${t.points} point(s)`);
+  }
+
   console.log("\n=== Tier Distribution ===");
   console.log(
     "  " +
-      "Tier".padEnd(10) +
-      "Token-Holdings".padEnd(18) +
+      "Tier".padEnd(14) +
+      "Entries".padEnd(14) +
       "Total Points".padEnd(16) +
       "% of Airdrop"
   );
@@ -185,16 +311,31 @@ function main(): void {
         : "0";
     console.log(
       "  " +
-        t.name.padEnd(10) +
-        stat.walletEntries.toLocaleString().padEnd(18) +
+        t.name.padEnd(14) +
+        stat.walletEntries.toLocaleString().padEnd(14) +
+        stat.totalPoints.toLocaleString().padEnd(16) +
+        `${pct}%`
+    );
+  }
+  console.log("  " + "-".repeat(55));
+  for (const t of PRESALE_TIERS) {
+    const stat = tierStats.get(t.name)!;
+    const pct =
+      grandTotalPoints > 0
+        ? ((stat.totalPoints / grandTotalPoints) * 100).toFixed(1)
+        : "0";
+    console.log(
+      "  " +
+        t.name.padEnd(14) +
+        stat.walletEntries.toLocaleString().padEnd(14) +
         stat.totalPoints.toLocaleString().padEnd(16) +
         `${pct}%`
     );
   }
   console.log(
     "  " +
-      "Total".padEnd(10) +
-      "".padEnd(18) +
+      "TOTAL".padEnd(14) +
+      "".padEnd(14) +
       grandTotalPoints.toLocaleString().padEnd(16)
   );
 
@@ -223,13 +364,13 @@ function main(): void {
 
   // --- Export CSV ---
   const csvPath = `${config.outputDir}/eligible_wallets.csv`;
-  const csvLines = ["wallet,airdrop_amount,points,token_count,breakdown"];
+  const csvLines = ["wallet,airdrop_amount,points,token_count,presale_sol,breakdown"];
   for (const e of entries) {
     const breakdownStr = e.breakdown
       .map((b) => `${b.token}:${b.tier}:${b.pct.toFixed(6)}%:${b.points}pts`)
       .join("|");
     csvLines.push(
-      `${e.wallet},${e.amount},${e.points},${e.tokenCount},${breakdownStr}`
+      `${e.wallet},${e.amount},${e.points},${e.tokenCount},${e.presaleSol.toFixed(4)},${breakdownStr}`
     );
   }
   fs.writeFileSync(csvPath, csvLines.join("\n") + "\n");
@@ -243,6 +384,7 @@ function main(): void {
     amount: e.amount,
     points: e.points,
     tokenCount: e.tokenCount,
+    presaleSol: e.presaleSol,
     breakdown: e.breakdown,
   }));
   fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2) + "\n");

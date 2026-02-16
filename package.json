@@ -13,7 +13,8 @@
     "merkle": "ts-node src/merkle.ts",
     "clawback": "ts-node src/clawback.ts",
     "create-distributor": "ts-node src/create-distributor.ts",
-    "deploy-distributor": "ts-node src/deploy-distributor.ts"
+    "deploy-distributor": "ts-node src/deploy-distributor.ts",
+    "presale-snapshot": "ts-node src/presale-snapshot.ts"
   },
   "repository": {
     "type": "git",

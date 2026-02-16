@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
-// DEVNET TEST CONFIG - Change to mainnet values when ready
-const IS_DEVNET = true;
+// MAINNET CONFIG
+const IS_DEVNET = false;
 
 // Custom Token-2022 compatible Merkle Claim program
 export const MERKLE_CLAIM_PROGRAM_ID = new PublicKey(
@@ -13,26 +13,26 @@ export const TOKEN_2022_PROGRAM_ID = new PublicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
-// Devnet test token
+// Devnet test token (200M with real amounts)
 const DEVNET_TOKEN_MINT = new PublicKey(
-  "CRUhHW8R9BdHproQ1kfWxqyptaBcWmuJfcyVd9D2rr2s"
+  "BtJ2q8R15HbtAMMdwpvq7zZ8Z2rxbvmHh4ajoFv6CPE8"
 );
 
-// Mainnet pump.fun token
+// Mainnet Token-2022 token
 const MAINNET_TOKEN_MINT = new PublicKey(
-  "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"
+  "GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"
 );
 
 export const TOKEN_MINT = IS_DEVNET ? DEVNET_TOKEN_MINT : MAINNET_TOKEN_MINT;
 
-// Authority that created the distributor (Playground wallet for devnet)
+// Authority that created the distributor (Playground wallet)
 const DEVNET_AUTHORITY = new PublicKey(
   "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
 );
 
-// Admin wallet for mainnet
+// Same Playground wallet for mainnet
 const MAINNET_AUTHORITY = new PublicKey(
-  "53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"
+  "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
 );
 
 export const DISTRIBUTOR_AUTHORITY = IS_DEVNET ? DEVNET_AUTHORITY : MAINNET_AUTHORITY;
@@ -52,8 +52,8 @@ export const RPC_ENDPOINT = IS_DEVNET
   ? "https://api.devnet.solana.com"
   : process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
 
-// Token decimals (devnet test token has 9 decimals, mainnet has 6)
-export const TOKEN_DECIMALS = IS_DEVNET ? 9 : 6;
+// Token decimals (6 for Token-2022 mainnet token)
+export const TOKEN_DECIMALS = 6;
 export const TOKEN_SYMBOL = "AIRDROP";
 
 // Clawback configuration
