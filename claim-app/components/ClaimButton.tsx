@@ -8,6 +8,7 @@ import {
   Transaction,
   TransactionInstruction,
   SystemProgram,
+  ComputeBudgetProgram,
 } from "@solana/web3.js";
 import {
   getAssociatedTokenAddressSync,
@@ -186,6 +187,12 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
       );
 
       const instructions: TransactionInstruction[] = [];
+
+      // Add priority fees to avoid transaction expiry
+      instructions.push(
+        ComputeBudgetProgram.setComputeUnitLimit({ units: 200_000 }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 50_000 })
+      );
 
       // Check if user has an ATA, if not create it
       const userAtaInfo = await connection.getAccountInfo(userAta);
