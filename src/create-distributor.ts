@@ -27,7 +27,17 @@ import * as dotenv from "dotenv";
 import bs58 from "bs58";
 import { createHash } from "crypto";
 
-dotenv.config();
+// Load .env manually as fallback for dotenv v17 issues
+const envResult = dotenv.config();
+if (envResult.error || !envResult.parsed || Object.keys(envResult.parsed).length === 0) {
+  try {
+    const envContent = fs.readFileSync(".env", "utf-8");
+    for (const line of envContent.split(/\r?\n/)) {
+      const match = line.match(/^\s*([^#=]+?)\s*=\s*(.*?)\s*$/);
+      if (match) process.env[match[1]] = match[2];
+    }
+  } catch {}
+}
 
 // Our custom Token-2022 compatible Merkle Claim Program
 const MERKLE_CLAIM_PROGRAM_ID = new PublicKey(
@@ -79,14 +89,21 @@ function loadKeypair(): Keypair {
     }
   }
 
-  // Try keypair file path
+  // Try keypair file path from env
   const keypairPath = process.env.ADMIN_KEYPAIR_PATH;
   if (keypairPath && fs.existsSync(keypairPath)) {
     const keypairData = JSON.parse(fs.readFileSync(keypairPath, "utf-8"));
     return Keypair.fromSecretKey(Uint8Array.from(keypairData));
   }
 
-  console.error("Set ADMIN_PRIVATE_KEY (base58) or ADMIN_KEYPAIR_PATH in .env");
+  // Fallback: check for keypair.json in project root
+  if (fs.existsSync("keypair.json")) {
+    console.log("  Loading keypair from ./keypair.json");
+    const keypairData = JSON.parse(fs.readFileSync("keypair.json", "utf-8"));
+    return Keypair.fromSecretKey(Uint8Array.from(keypairData));
+  }
+
+  console.error("Set ADMIN_PRIVATE_KEY (base58) or ADMIN_KEYPAIR_PATH in .env, or place keypair.json in project root");
   process.exit(1);
 }
 
