@@ -15,7 +15,7 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
-  MERKLE_CLAIM_PROGRAM_ID,
+  MERKLE_DISTRIBUTOR_PROGRAM_ID,
   TOKEN_2022_PROGRAM_ID,
   DISTRIBUTOR_PUBKEY,
   TOKEN_MINT,
@@ -126,11 +126,11 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
 
         const [claimStatusPda] = PublicKey.findProgramAddressSync(
           [
-            Buffer.from("claim"),
+            Buffer.from("ClaimStatus"),
             DISTRIBUTOR_PUBKEY.toBuffer(),
             indexBytes,
           ],
-          MERKLE_CLAIM_PROGRAM_ID
+          MERKLE_DISTRIBUTOR_PROGRAM_ID
         );
 
         // Check if the account exists (means already claimed)
@@ -209,9 +209,9 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
         );
       }
 
-      // Build claim instruction data
+      // Build Jito new_claim instruction data
       // Layout: 8-byte discriminator + u64 index + u64 amount + Vec<[u8; 32]> proof
-      const discriminator = getDiscriminator("claim");
+      const discriminator = getDiscriminator("new_claim");
       const amountBuf = Buffer.alloc(8);
       amountBuf.writeBigUInt64LE(BigInt(amount), 0);
 
@@ -223,18 +223,17 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
 
       const data = Buffer.concat([discriminator, indexBytes, amountBuf, proofDataBuf]);
 
-      // Build claim instruction
+      // Build claim instruction (Jito Merkle Distributor account layout)
       const claimIx = new TransactionInstruction({
-        programId: MERKLE_CLAIM_PROGRAM_ID,
+        programId: MERKLE_DISTRIBUTOR_PROGRAM_ID,
         keys: [
-          { pubkey: publicKey, isSigner: true, isWritable: true },
           { pubkey: DISTRIBUTOR_PUBKEY, isSigner: false, isWritable: true },
           { pubkey: claimStatusPda, isSigner: false, isWritable: true },
-          { pubkey: TOKEN_MINT, isSigner: false, isWritable: false },
           { pubkey: vault, isSigner: false, isWritable: true },
           { pubkey: userAta, isSigner: false, isWritable: true },
+          { pubkey: publicKey, isSigner: true, isWritable: true },  // claimant
+          { pubkey: TOKEN_MINT, isSigner: false, isWritable: false },
           { pubkey: TOKEN_2022_PROGRAM_ID, isSigner: false, isWritable: false },
-          { pubkey: ASSOCIATED_TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         data,

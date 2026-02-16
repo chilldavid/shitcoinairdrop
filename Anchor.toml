@@ -18,7 +18,7 @@ merkle_claim = "C1aiMKM4Z3gF1rU2rFQBfpDqFqrX3TF7q5XpNnMvpump"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "mainnet"
 wallet = "${HOME}/.config/solana/id.json"
 
 [scripts]

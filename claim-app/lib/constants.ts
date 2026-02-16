@@ -1,11 +1,8 @@
 import { PublicKey } from "@solana/web3.js";
 
-// DEVNET TEST CONFIG - Change to mainnet values when ready
-const IS_DEVNET = true;
-
-// Custom Token-2022 compatible Merkle Claim program
-export const MERKLE_CLAIM_PROGRAM_ID = new PublicKey(
-  "DyyLURFK28R8GoTwpPsxHKydyhJ2SzYFJ17451B7he85"
+// Jito Merkle Distributor Program (mainnet)
+export const MERKLE_DISTRIBUTOR_PROGRAM_ID = new PublicKey(
+  "mERKcfxMC5SqJn4Ld4BUris3WKZZ1ojjWJ3A3J5CKxv"
 );
 
 // Token-2022 Program ID
@@ -13,52 +10,35 @@ export const TOKEN_2022_PROGRAM_ID = new PublicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
-// Devnet test token (200M with real amounts)
-const DEVNET_TOKEN_MINT = new PublicKey(
-  "BtJ2q8R15HbtAMMdwpvq7zZ8Z2rxbvmHh4ajoFv6CPE8"
+// Mainnet Token-2022 airdrop token
+export const TOKEN_MINT = new PublicKey(
+  "GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"
 );
 
-// Mainnet pump.fun token
-const MAINNET_TOKEN_MINT = new PublicKey(
-  "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"
-);
-
-export const TOKEN_MINT = IS_DEVNET ? DEVNET_TOKEN_MINT : MAINNET_TOKEN_MINT;
-
-// Authority that created the distributor (Playground wallet)
-const DEVNET_AUTHORITY = new PublicKey(
+// Authority (Playground wallet)
+export const DISTRIBUTOR_AUTHORITY = new PublicKey(
   "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
 );
 
-// Same Playground wallet for mainnet
-const MAINNET_AUTHORITY = new PublicKey(
-  "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
-);
-
-export const DISTRIBUTOR_AUTHORITY = IS_DEVNET ? DEVNET_AUTHORITY : MAINNET_AUTHORITY;
-
-// Derive the distributor PDA: ["distributor", mint, authority]
-export const [DISTRIBUTOR_PUBKEY] = PublicKey.findProgramAddressSync(
-  [
-    Buffer.from("distributor"),
-    TOKEN_MINT.toBuffer(),
-    DISTRIBUTOR_AUTHORITY.toBuffer(),
-  ],
-  MERKLE_CLAIM_PROGRAM_ID
+// Distributor PDA — UPDATE THIS after running `npm run create-distributor`
+// The Jito program derives PDAs as ["MerkleDistributor", base_pubkey]
+// where base is a keypair generated at creation time, so this must be set
+// after the distributor is created on-chain.
+export const DISTRIBUTOR_PUBKEY = new PublicKey(
+  "11111111111111111111111111111111" // PLACEHOLDER — replace after creation
 );
 
 // RPC endpoint
-export const RPC_ENDPOINT = IS_DEVNET
-  ? "https://api.devnet.solana.com"
-  : process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
+export const RPC_ENDPOINT =
+  process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
 
-// Token decimals (9 for devnet test token, 6 for mainnet)
-export const TOKEN_DECIMALS = 9;
+// Token decimals (6 for mainnet Token-2022 token)
+export const TOKEN_DECIMALS = 6;
 export const TOKEN_SYMBOL = "AIRDROP";
 
 // Clawback configuration
 export const CLAWBACK_RECEIVER = new PublicKey(
-  "53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"
+  "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
 );
 
 export const CLAWBACK_START_TS = Math.floor(
@@ -72,6 +52,4 @@ export const CLAIM_DEADLINE = new Date(CLAWBACK_START_TS * 1000).toLocaleDateStr
 });
 
 // For explorer links
-export const EXPLORER_URL = IS_DEVNET
-  ? "https://solscan.io/tx/{signature}?cluster=devnet"
-  : "https://solscan.io/tx/{signature}";
+export const EXPLORER_URL = "https://solscan.io/tx/{signature}";

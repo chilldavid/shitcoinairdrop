@@ -35,11 +35,11 @@ const PROGRAM_ID = new PublicKey("CLAiM1111111111111111111111111111111111111");
 
 // Configuration - UPDATE THESE VALUES
 const CONFIG = {
-  tokenMint: new PublicKey("9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"),
-  merkleRoot: "3da7641a2461ebe6e0140dc4dedbab928a048d18abcce05100832b0d3baf0028",
-  maxTotalClaim: BigInt("70000000000"), // 70,000 tokens with 6 decimals
-  maxNumNodes: BigInt(93107),
-  clawbackStartTs: BigInt(1746057600), // May 1, 2025
+  tokenMint: new PublicKey("GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"),
+  merkleRoot: "0000000000000000000000000000000000000000000000000000000000000000", // UPDATE after running `npm run merkle`
+  maxTotalClaim: BigInt("200000000000000"), // 200,000,000 tokens with 6 decimals
+  maxNumNodes: BigInt(100000), // UPDATE with actual recipient count from merkle output
+  clawbackStartTs: BigInt(1809216000), // May 1, 2027
 };
 
 function getDiscriminator(namespace: string, name: string): Buffer {
@@ -73,8 +73,8 @@ function loadKeypair(): Keypair {
 
 async function main() {
   const rpcUrl = process.env.HELIUS_API_KEY
-    ? `https://devnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`
-    : "https://api.devnet.solana.com";
+    ? `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`
+    : "https://api.mainnet-beta.solana.com";
 
   const connection = new Connection(rpcUrl, "confirmed");
   const authority = loadKeypair();

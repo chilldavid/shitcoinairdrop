@@ -36,12 +36,12 @@ const MERKLE_DISTRIBUTOR_PROGRAM_ID = new PublicKey(
 
 // Configuration - UPDATE THESE VALUES
 const CONFIG = {
-  tokenMint: new PublicKey("9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"),
-  merkleRoot: "3da7641a2461ebe6e0140dc4dedbab928a048d18abcce05100832b0d3baf0028",
-  maxTotalClaim: BigInt("70000000000"), // 70,000 tokens with 6 decimals
-  maxNumNodes: BigInt(93107),
-  clawbackStartTs: BigInt(1746057600), // May 1, 2025
-  clawbackReceiver: new PublicKey("53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"),
+  tokenMint: new PublicKey("GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"),
+  merkleRoot: "0000000000000000000000000000000000000000000000000000000000000000", // UPDATE after running `npm run merkle`
+  maxTotalClaim: BigInt("200000000000000"), // 200,000,000 tokens with 6 decimals
+  maxNumNodes: BigInt(100000), // UPDATE with actual recipient count from merkle output
+  clawbackStartTs: BigInt(1809216000), // May 1, 2027
+  clawbackReceiver: new PublicKey("3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"),
 };
 
 // Calculate Anchor discriminator: sha256("global:new_distributor")[0..8]
@@ -315,8 +315,8 @@ async function main() {
   console.log("  TOKEN_VAULT:", tokenVault.toBase58());
   console.log("");
   console.log("Next steps:");
-  console.log(`  1. Send 70,000 tokens to the vault: ${tokenVault.toBase58()}`);
-  console.log("  2. Update claim-app/lib/constants.ts with DISTRIBUTOR_PUBKEY");
+  console.log(`  1. Send 200,000,000 tokens to the vault: ${tokenVault.toBase58()}`);
+  console.log("  2. Update claim-app/lib/constants.ts DISTRIBUTOR_PUBKEY with:", distributorPda.toBase58());
   console.log("  3. Deploy the claim app");
 
   // Save distributor info
