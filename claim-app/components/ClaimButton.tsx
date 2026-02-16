@@ -264,18 +264,39 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
       // Sign and send
       const signed = await signTransaction(tx);
       const signature = await connection.sendRawTransaction(signed.serialize(), {
-        skipPreflight: false,
-        maxRetries: 3,
+        skipPreflight: true, // already simulated above
+        maxRetries: 5,
       });
 
       console.log("Transaction sent:", signature);
 
-      // Wait for confirmation
-      await connection.confirmTransaction({
-        signature,
-        blockhash,
-        lastValidBlockHeight,
-      });
+      // Wait for confirmation with polling fallback
+      try {
+        await connection.confirmTransaction({
+          signature,
+          blockhash,
+          lastValidBlockHeight,
+        }, "confirmed");
+      } catch (confirmErr) {
+        // Blockhash may have expired but tx could still have landed
+        // Poll for status before declaring failure
+        console.log("Confirmation timed out, checking transaction status...");
+        for (let i = 0; i < 10; i++) {
+          await new Promise((r) => setTimeout(r, 2000));
+          const status = await connection.getSignatureStatus(signature);
+          if (status.value?.confirmationStatus === "confirmed" ||
+              status.value?.confirmationStatus === "finalized") {
+            console.log("Transaction confirmed via polling");
+            setTxSignature(signature);
+            setClaimStatus({ hasClaimed: true });
+            return;
+          }
+          if (status.value?.err) {
+            throw new Error(`Transaction failed: ${JSON.stringify(status.value.err)}`);
+          }
+        }
+        throw confirmErr;
+      }
 
       setTxSignature(signature);
       setClaimStatus({ hasClaimed: true });
