@@ -143,6 +143,19 @@ export default function Landing() {
         </a>
       </div>
 
+      {/* Airdrop CTA */}
+      <Link href="/claim" className={styles.airdropCta}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/gold_coin_parachute.png"
+          alt="Airdrop"
+          className={styles.airdropCoin}
+        />
+        <span className={styles.airdropCtaText}>
+          Check your<br />$SAFARI airdrop
+        </span>
+      </Link>
+
       <div className={styles.content}>
         <div className={styles.heroGroup}>
           {/* eslint-disable-next-line @next/next/no-img-element */}

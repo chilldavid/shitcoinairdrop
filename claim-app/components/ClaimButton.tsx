@@ -49,7 +49,6 @@ interface ClaimStatus {
 
 interface ClaimButtonProps {
   tokenSprites?: Record<string, string>;
-  mockProofData?: ProofData;
 }
 
 // Calculate Anchor discriminator
@@ -62,7 +61,6 @@ function getDiscriminator(name: string): Buffer {
 
 export const ClaimButton: FC<ClaimButtonProps> = ({
   tokenSprites = {},
-  mockProofData,
 }) => {
   const { connection } = useConnection();
   const { publicKey, signTransaction, connected } = useWallet();
@@ -75,13 +73,10 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   const [txSignature, setTxSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Use mock data if provided, otherwise use real proof data
-  const displayData = mockProofData || proofData;
+  const displayData = proofData;
 
-  // Fetch proof data when wallet connects (only when not mocking)
+  // Fetch proof data when wallet connects
   useEffect(() => {
-    if (mockProofData) return;
-
     if (!publicKey) {
       setProofData(null);
       setClaimStatus(null);
@@ -105,12 +100,10 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
     };
 
     fetchProof();
-  }, [publicKey, mockProofData]);
+  }, [publicKey]);
 
   // Check if user has already claimed
   useEffect(() => {
-    if (mockProofData) return;
-
     if (!publicKey || !proofData?.eligible || proofData.index === undefined) {
       setClaimStatus(null);
       setCheckingClaim(false);
@@ -146,7 +139,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
     };
 
     checkClaimStatus();
-  }, [publicKey, proofData, connection, mockProofData]);
+  }, [publicKey, proofData, connection]);
 
   const handleClaim = useCallback(async () => {
     if (!publicKey || !signTransaction || !proofData?.eligible) return;
@@ -329,7 +322,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   );
 
   // ── Not connected ──
-  if (!connected && !mockProofData) {
+  if (!connected) {
     return (
       <div className={styles.claimCard}>
         <h2>Connect your wallet to check eligibility</h2>
@@ -339,7 +332,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   }
 
   // ── Loading ──
-  if (loading && !mockProofData) {
+  if (loading) {
     return (
       <div className={styles.claimCard}>
         <p>Checking eligibility...</p>
@@ -348,7 +341,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   }
 
   // ── Error ──
-  if (error && !mockProofData) {
+  if (error) {
     return (
       <div className={styles.claimCard}>
         <p className={styles.errorMsg}>{error}</p>
@@ -372,12 +365,12 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   }
 
   // ── Checking claim status ──
-  if (checkingClaim && !mockProofData) {
+  if (checkingClaim) {
     return (
       <div className={styles.claimCard}>
         <h2>You are eligible!</h2>
         <p className={styles.amount}>
-          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens
         </p>
         {displayData.breakdown &&
           displayData.breakdown.length > 0 &&
@@ -388,12 +381,12 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   }
 
   // ── Already claimed ──
-  if (claimStatus?.hasClaimed && !mockProofData) {
+  if (claimStatus?.hasClaimed) {
     return (
       <div className={styles.claimCard}>
         <h2>Already Claimed</h2>
         <p className={styles.amount}>
-          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+          {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens
         </p>
         {displayData.breakdown &&
           displayData.breakdown.length > 0 &&
@@ -415,7 +408,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
   }
 
   // ── Claim success ──
-  if (txSignature && !mockProofData) {
+  if (txSignature) {
     return (
       <div className={styles.claimCard}>
         <h2>Claim Successful!</h2>
@@ -440,26 +433,19 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
     <div className={styles.claimCard}>
       <h2>You are eligible!</h2>
       <p className={styles.amount}>
-        {formatAmount(displayData.amount!)} {TOKEN_SYMBOL}
+        {formatAmount(displayData.amount!)} {TOKEN_SYMBOL} tokens
       </p>
       {displayData.breakdown &&
         displayData.breakdown.length > 0 &&
         renderBreakdown(displayData.breakdown)}
-      {!mockProofData && (
-        <button
-          onClick={handleClaim}
-          disabled={claiming}
-          className={`${styles.claimBtn} ${styles.claimBtnGreen}`}
-        >
-          {claiming ? "Claiming..." : "Claim Tokens"}
-        </button>
-      )}
-      {mockProofData && (
-        <button disabled className={styles.claimBtn}>
-          Claim Tokens
-        </button>
-      )}
-      {!mockProofData && <WalletMultiButton />}
+      <button
+        onClick={handleClaim}
+        disabled={claiming}
+        className={`${styles.claimBtn} ${styles.claimBtnGreen}`}
+      >
+        {claiming ? "Claiming..." : "Claim Tokens"}
+      </button>
+      <WalletMultiButton />
     </div>
   );
 };
