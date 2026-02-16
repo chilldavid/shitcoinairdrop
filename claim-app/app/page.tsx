@@ -147,7 +147,7 @@ export default function Landing() {
         <div className={styles.heroGroup}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo_text.png" alt="Shitcoin Safari" className={styles.logo} />
-          <button className={styles.playBtn}>Play Now</button>
+          <a href="https://play.shitcoinsafari.com" target="_blank" rel="noopener noreferrer" className={styles.playBtn}>Play Now</a>
           <Link href="/claim" className={styles.claimLink}>
             Claim Airdrop
           </Link>
@@ -393,7 +393,7 @@ export default function Landing() {
       {/* Footer CTA */}
       <div className={styles.footer}>
         <h2 className={styles.footerTitle}>Ready to play?</h2>
-        <button className={styles.playBtn}>Play Now</button>
+        <a href="https://play.shitcoinsafari.com" target="_blank" rel="noopener noreferrer" className={styles.playBtn}>Play Now</a>
         <p className={styles.footerCommunity}>
           Make sure you join the Shitcoin Safari community
         </p>
