@@ -320,7 +320,7 @@ export const ClaimButton: FC<ClaimButtonProps> = ({
                 className={styles.mascotIcon}
               />
             )}
-            <span className={styles.tokenName}>{entry.token}</span>
+            <span className={styles.tokenName}>{entry.token === "PRESALE" ? "Bob Lax presale" : entry.token}</span>
             <span className={styles.tierBadge}>{entry.tier}</span>
           </li>
         ))}
