@@ -34,16 +34,28 @@ const MERKLE_CLAIM_PROGRAM_ID = new PublicKey(
   "DyyLURFK28R8GoTwpPsxHKydyhJ2SzYFJ17451B7he85"
 );
 
-// Configuration - UPDATE THESE VALUES
+// Load merkle tree output to get root and recipient count
+function loadMerkleTree(): { root: string; totalAmount: string; recipientCount: number } {
+  const treePath = "output/merkle_tree.json";
+  if (!fs.existsSync(treePath)) {
+    console.error(`Merkle tree not found: ${treePath}`);
+    console.error("Run `npm run merkle` first.");
+    process.exit(1);
+  }
+  return JSON.parse(fs.readFileSync(treePath, "utf-8"));
+}
+
+const merkleTree = loadMerkleTree();
+
 const CONFIG = {
-  tokenMint: new PublicKey("9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump"),
-  merkleRoot: "3da7641a2461ebe6e0140dc4dedbab928a048d18abcce05100832b0d3baf0028",
-  maxTotalClaim: BigInt("70000000000000"), // 70,000 tokens with 6 decimals
-  maxNumNodes: BigInt(93107),
-  clawbackStartTs: BigInt(1746057600), // May 1, 2025
+  tokenMint: new PublicKey("GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"),
+  merkleRoot: merkleTree.root,
+  maxTotalClaim: BigInt(merkleTree.totalAmount), // from merkle tree output
+  maxNumNodes: BigInt(merkleTree.recipientCount),
+  clawbackStartTs: BigInt(1809148800), // May 1, 2027
   clawbackReceiver: new PublicKey("53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"),
   // Set to true for devnet testing, false for mainnet
-  useDevnet: true,
+  useDevnet: false,
 };
 
 // Calculate Anchor discriminator: sha256("global:initialize")[0..8]
@@ -259,8 +271,8 @@ async function main() {
   console.log("  TOKEN_VAULT:", tokenVault.toBase58());
   console.log("");
   console.log("Next steps:");
-  console.log(`  1. Send tokens to the vault: ${tokenVault.toBase58()}`);
-  console.log("  2. Update claim-app with the distributor address");
+  console.log(`  1. Send 200,000,000 tokens to the vault: ${tokenVault.toBase58()}`);
+  console.log("  2. Update claim-app/lib/constants.ts with DISTRIBUTOR_PUBKEY");
   console.log("  3. Deploy the claim app");
 
   // Save distributor info
