@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import styles from "./landing.module.css";
 
-const CONTRACT_ADDRESS = "9CSzePps7jLo4WjTXNxstAYkYfKxVFotbZJVrorApump";
+const CONTRACT_ADDRESS = "GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump";
 const ADDR_FRONT = CONTRACT_ADDRESS.slice(0, 22);
 const ADDR_BACK = CONTRACT_ADDRESS.slice(22);
 
@@ -106,7 +106,7 @@ export default function Landing() {
       {/* Social links */}
       <div className={styles.socials}>
         <a
-          href="https://x.com"
+          href="https://x.com/shitcoin_safari"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.socialBtn}
@@ -117,7 +117,7 @@ export default function Landing() {
           </svg>
         </a>
         <a
-          href="https://t.me"
+          href="https://t.me/shitcoin_safari"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.socialBtn}
@@ -128,7 +128,7 @@ export default function Landing() {
           </svg>
         </a>
         <a
-          href="https://pump.fun"
+          href="https://pump.fun/coin/GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.socialBtn}
@@ -399,7 +399,7 @@ export default function Landing() {
         </p>
         <div className={styles.footerSocials}>
           <a
-            href="https://x.com"
+            href="https://x.com/shitcoin_safari"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.footerSocialBtn}
@@ -410,7 +410,7 @@ export default function Landing() {
             </svg>
           </a>
           <a
-            href="https://t.me"
+            href="https://t.me/shitcoin_safari"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.footerSocialBtn}
@@ -421,7 +421,7 @@ export default function Landing() {
             </svg>
           </a>
           <a
-            href="https://pump.fun"
+            href="https://pump.fun/coin/GkDY92hamTR9Vv8QDHhq548KgoSb5fpCXTjFdNAVpump"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.footerSocialBtn}
