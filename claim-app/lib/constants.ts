@@ -50,7 +50,7 @@ export const [DISTRIBUTOR_PUBKEY] = PublicKey.findProgramAddressSync(
 // RPC endpoint
 export const RPC_ENDPOINT = IS_DEVNET
   ? "https://api.devnet.solana.com"
-  : process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
+  : process.env.NEXT_PUBLIC_RPC_URL || "https://mainnet.helius-rpc.com/?api-key=bcdd4723-7c43-4075-aa45-58a9836941f3";
 
 // Token decimals (6 for Token-2022 mainnet token)
 export const TOKEN_DECIMALS = 6;
