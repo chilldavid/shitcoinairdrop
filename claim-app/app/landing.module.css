@@ -109,6 +109,8 @@
 
 /* Play Now Button */
 .playBtn {
+  display: inline-block;
+  text-decoration: none;
   font-family: 'Press Start 2P', monospace;
   font-size: 28px;
   color: #fff;
