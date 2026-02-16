@@ -2,12 +2,6 @@
 members = ["programs/merkle-claim"]
 resolver = "2"
 
-# Pin dependencies to versions that work with Solana's older Cargo
-[patch.crates-io]
-blake3 = { version = "=1.5.4" }
-wit-bindgen = { version = "=0.36.0" }
-wasip2 = { version = "=0.13.3" }
-
 [profile.release]
 overflow-checks = true
 lto = "fat"

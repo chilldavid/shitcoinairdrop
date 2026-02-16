@@ -14,7 +14,7 @@
     "clawback": "ts-node src/clawback.ts",
     "create-distributor": "ts-node src/create-distributor.ts",
     "deploy-distributor": "ts-node src/deploy-distributor.ts",
-    "presale-snapshot": "ts-node src/presale-snapshot.ts"
+    "create-test-token": "ts-node src/create-test-token.ts"
   },
   "repository": {
     "type": "git",
