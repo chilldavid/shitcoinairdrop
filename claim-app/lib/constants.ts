@@ -25,14 +25,14 @@ const MAINNET_TOKEN_MINT = new PublicKey(
 
 export const TOKEN_MINT = IS_DEVNET ? DEVNET_TOKEN_MINT : MAINNET_TOKEN_MINT;
 
-// Authority that created the distributor (Playground wallet for devnet)
+// Authority that created the distributor (Playground wallet)
 const DEVNET_AUTHORITY = new PublicKey(
   "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
 );
 
-// Admin wallet for mainnet
+// Same Playground wallet for mainnet
 const MAINNET_AUTHORITY = new PublicKey(
-  "53ta1BRk53xZa5L9CpgFX7gapc1MvLL1VsxESnSsTpPb"
+  "3JZqLjJkir7QMxaJoBnba1q53H88nuZFcSjwiXyQE7o4"
 );
 
 export const DISTRIBUTOR_AUTHORITY = IS_DEVNET ? DEVNET_AUTHORITY : MAINNET_AUTHORITY;
